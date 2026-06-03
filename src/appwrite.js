@@ -2,7 +2,7 @@
 // Uses environment variables from .env file
 // Falls back to localStorage if Appwrite is not configured
 
-import { Client, Databases, Query } from 'appwrite';
+import { Client, Databases, Query, ID } from 'appwrite';
 import { MOCK_POSTS } from './mockPosts';
 
 const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT || '';
@@ -105,7 +105,6 @@ export async function createBlogPost(data) {
     return { post: newPost, isMock: true };
   }
 
-  const { ID } = await import('appwrite');
   const post = await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), data);
   return { post, isMock: false };
 }
