@@ -1,7 +1,7 @@
-// AdminBlog.jsx – password-protected blog admin dashboard
-// Allows creating, editing, and deleting blog posts (Appwrite or localStorage fallback)
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '../appwrite';
+
 
 // ─── Simple auth (stored in sessionStorage) ──────────────────────
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'shadab@admin2024';
@@ -90,7 +90,6 @@ function AdminDashboard({ onLogout }) {
   const loadPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const { getBlogPosts } = await import('../appwrite');
       const { posts } = await getBlogPosts();
       setPosts(posts);
     } catch (e) {
@@ -105,19 +104,7 @@ function AdminDashboard({ onLogout }) {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this post permanently?')) return;
     try {
-      const { Client, Databases } = await import('appwrite');
-      const ENDPOINT       = import.meta.env.VITE_APPWRITE_ENDPOINT;
-      const PROJECT_ID     = import.meta.env.VITE_APPWRITE_PROJECT_ID;
-      const DATABASE_ID    = import.meta.env.VITE_APPWRITE_DATABASE_ID;
-      const COLLECTION_ID  = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
-
-      if (!ENDPOINT || !PROJECT_ID) {
-        showToast('Appwrite not configured – running in read-only mode.', 'error');
-        return;
-      }
-      const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
-      const db = new Databases(client);
-      await db.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+      await deleteBlogPost(id);
       showToast('Post deleted.');
       loadPosts();
     } catch (e) {
@@ -232,25 +219,11 @@ function PostEditor({ post, onSave, onCancel }) {
     setError('');
 
     try {
-      const { Client, Databases, ID } = await import('appwrite');
-      const ENDPOINT      = import.meta.env.VITE_APPWRITE_ENDPOINT;
-      const PROJECT_ID    = import.meta.env.VITE_APPWRITE_PROJECT_ID;
-      const DATABASE_ID   = import.meta.env.VITE_APPWRITE_DATABASE_ID;
-      const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
-
-      if (!ENDPOINT || !PROJECT_ID || PROJECT_ID === 'your_project_id') {
-        // No Appwrite – just pretend success
-        await new Promise((r) => setTimeout(r, 800));
-        onSave();
-        return;
-      }
-      const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
-      const db = new Databases(client);
       const data = { title: form.title, excerpt: form.excerpt, content: form.content, category: form.category, date: form.date, readTime: form.readTime, coverImage: form.coverImage, author: form.author };
       if (post) {
-        await db.updateDocument(DATABASE_ID, COLLECTION_ID, post.$id, data);
+        await updateBlogPost(post.$id, data);
       } else {
-        await db.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), data);
+        await createBlogPost(data);
       }
       onSave();
     } catch (e) {

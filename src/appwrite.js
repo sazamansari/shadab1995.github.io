@@ -1,8 +1,9 @@
 // Appwrite configuration and service layer
 // Uses environment variables from .env file
-// Falls back to mock data if Appwrite is not configured
+// Falls back to localStorage if Appwrite is not configured
 
 import { Client, Databases, Query } from 'appwrite';
+import { MOCK_POSTS } from './mockPosts';
 
 const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT || '';
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID || '';
@@ -19,16 +20,42 @@ if (isConfigured) {
   databases = new Databases(client);
 }
 
-import { MOCK_POSTS } from './mockPosts';
 export { MOCK_POSTS };
-
 export const isMockMode = !isConfigured;
 
+const LOCAL_STORAGE_KEY = 'portfolio_blog_posts';
+
 /**
- * Fetch all blog posts from Appwrite, or return mock data.
+ * Gets posts from localStorage or initializes with mock posts.
+ */
+function getLocalPosts() {
+  const local = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!local) {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(MOCK_POSTS));
+    return MOCK_POSTS;
+  }
+  try {
+    return JSON.parse(local);
+  } catch (e) {
+    console.error('Failed to parse local storage posts:', e);
+    return MOCK_POSTS;
+  }
+}
+
+/**
+ * Saves posts to localStorage.
+ */
+function setLocalPosts(posts) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
+}
+
+/**
+ * Fetch all blog posts from Appwrite, or return local storage data.
  */
 export async function getBlogPosts() {
-  if (!isConfigured) return { posts: MOCK_POSTS, isMock: true };
+  if (!isConfigured) {
+    return { posts: getLocalPosts(), isMock: true };
+  }
   try {
     const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.orderDesc('date'),
@@ -37,16 +64,17 @@ export async function getBlogPosts() {
     return { posts: response.documents, isMock: false };
   } catch (err) {
     console.error('Appwrite fetch error:', err);
-    return { posts: MOCK_POSTS, isMock: true };
+    return { posts: getLocalPosts(), isMock: true };
   }
 }
 
 /**
- * Fetch a single blog post by ID from Appwrite, or from mock data.
+ * Fetch a single blog post by ID from Appwrite, or from local storage.
  */
 export async function getBlogPost(id) {
   if (!isConfigured) {
-    const post = MOCK_POSTS.find((p) => p.$id === id) || null;
+    const posts = getLocalPosts();
+    const post = posts.find((p) => p.$id === id) || null;
     return { post, isMock: true };
   }
   try {
@@ -54,7 +82,70 @@ export async function getBlogPost(id) {
     return { post, isMock: false };
   } catch (err) {
     console.error('Appwrite fetch error:', err);
-    const post = MOCK_POSTS.find((p) => p.$id === id) || null;
+    const posts = getLocalPosts();
+    const post = posts.find((p) => p.$id === id) || null;
     return { post, isMock: true };
   }
+}
+
+/**
+ * Create a new blog post.
+ */
+export async function createBlogPost(data) {
+  if (!isConfigured) {
+    const posts = getLocalPosts();
+    const newPost = {
+      ...data,
+      $id: 'post-' + Date.now(),
+      $createdAt: new Date().toISOString(),
+      $updatedAt: new Date().toISOString(),
+    };
+    const updated = [newPost, ...posts];
+    setLocalPosts(updated);
+    return { post: newPost, isMock: true };
+  }
+
+  const { ID } = await import('appwrite');
+  const post = await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), data);
+  return { post, isMock: false };
+}
+
+/**
+ * Update an existing blog post by ID.
+ */
+export async function updateBlogPost(id, data) {
+  if (!isConfigured) {
+    const posts = getLocalPosts();
+    let updatedPost = null;
+    const updated = posts.map((p) => {
+      if (p.$id === id) {
+        updatedPost = { ...p, ...data, $updatedAt: new Date().toISOString() };
+        return updatedPost;
+      }
+      return p;
+    });
+    if (!updatedPost) {
+      throw new Error('Post not found');
+    }
+    setLocalPosts(updated);
+    return { post: updatedPost, isMock: true };
+  }
+
+  const post = await databases.updateDocument(DATABASE_ID, COLLECTION_ID, id, data);
+  return { post, isMock: false };
+}
+
+/**
+ * Delete a blog post by ID.
+ */
+export async function deleteBlogPost(id) {
+  if (!isConfigured) {
+    const posts = getLocalPosts();
+    const updated = posts.filter((p) => p.$id !== id);
+    setLocalPosts(updated);
+    return { success: true, isMock: true };
+  }
+
+  await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+  return { success: true, isMock: false };
 }

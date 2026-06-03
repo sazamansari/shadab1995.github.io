@@ -44,9 +44,24 @@ const CERTS = [
     certificationNumber: 'FDA6BN-C1D524',
     credlyUrl: 'https://learn.microsoft.com/en-us/users/mdshadabazamansari-4026/credentials/certification/azure-administrator?tab=credentials-tab',
   },
-  // ── GitLab ───────────────────────────────────────────────────────
   {
     id: 4,
+    image: '/certs/ms-certified-expert.png',
+    name: 'Microsoft Certified: DevOps Engineer Expert',
+    level: 'Expert',
+    issuer: 'Microsoft',
+    bgGradient: 'linear-gradient(135deg, #001537 0%, #003087 100%)',
+    badgeColor: '#0078D4',
+    year: '2026',
+    issued: 'June 3, 2026',
+    expires: 'June 4, 2027',
+    credentialId: 'F0B171D17CFBE2C5',
+    certificationNumber: '5CFE6C-CB6C0Q',
+    credlyUrl: 'https://learn.microsoft.com/en-us/users/mdshadabazamansari-4026/credentials/certification/devops-engineer?tab=credentials-tab',
+  },
+  // ── GitLab ───────────────────────────────────────────────────────
+  {
+    id: 5,
     image: '/certs/gitlab-git.png',
     name: 'GitLab Certified Git Associate',
     level: 'Associate',
@@ -58,7 +73,7 @@ const CERTS = [
   },
   // ── GitHub ───────────────────────────────────────────────────────
   {
-    id: 5,
+    id: 6,
     image: '/certs/github-foundations.png',
     name: 'GitHub Foundations',
     level: 'Certification Program',
@@ -70,7 +85,7 @@ const CERTS = [
   },
   // ── Aviatrix ─────────────────────────────────────────────────────
   {
-    id: 6,
+    id: 7,
     image: '/certs/aviatrix-ace.png',
     name: 'Aviatrix Certified Engineer (ACE)',
     level: 'Associate',
@@ -84,7 +99,7 @@ const CERTS = [
 
 const STATS = [
   { icon: 'fa-certificate', label: `${CERTS.length} Certifications`, color: '#FCCE04' },
-  { icon: 'fa-cloud',       label: '3 Cloud Certs',   color: '#FF9900' },
+  { icon: 'fa-cloud',       label: '4 Cloud Certs',   color: '#FF9900' },
   { icon: 'fa-code-fork',   label: 'Git & DevOps',    color: '#FC6D26' },
 ];
 
