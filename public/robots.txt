@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://md-shadab-azam-ansari.vercel.app/sitemap.xml
