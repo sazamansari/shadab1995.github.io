@@ -72,7 +72,7 @@ export default function Sidebar({ menuOpen, toggleMenu }) {
             </a>
           </li>
           <li>
-            <a href="https://www.instagram.com/_tipu_786_/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a href="https://www.instagram.com/shadab.focused/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <i className="fa fa-instagram" />
             </a>
           </li>

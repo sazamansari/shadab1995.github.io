@@ -51,6 +51,15 @@ export default function Contact() {
                         github.com/sazamansari
                       </a>
                     </ContactItem>
+                    <ContactItem icon="fa-instagram" label="Instagram">
+                      <a
+                        href="https://www.instagram.com/shadab.focused/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        instagram.com/shadab.focused
+                      </a>
+                    </ContactItem>
 
                   </ul>
                 </AnimateBox>
