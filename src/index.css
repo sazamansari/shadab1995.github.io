@@ -40,7 +40,7 @@ body {
 
 /* Canvas background */
 #canvas {
-  background: #EEE;
+  background: var(--bg-light);
   position: fixed;
   top: 0;
   left: 0;
@@ -1099,21 +1099,26 @@ a.cert-card:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: var(--bg-light);
   padding: 2em;
 }
 
 .admin-login-card {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 20px;
-  padding: 3em 2.5em;
+  padding: 3.5em 3em;
   width: 100%;
   max-width: 420px;
   text-align: center;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-  transition: transform 0.1s;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-login-card:hover {
+  border-color: rgba(252, 206, 4, 0.4);
+  box-shadow: 0 20px 45px rgba(252, 206, 4, 0.1), 0 15px 40px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
 }
 
 .admin-login-card.shake {
@@ -1128,40 +1133,19 @@ a.cert-card:hover {
   80%       { transform: translateX(8px); }
 }
 
-.admin-login-icon {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FCCE04, #FF9900);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1.5em;
-  font-size: 28px;
-  color: #000;
-  box-shadow: 0 8px 20px rgba(252,206,4,0.3);
-}
-
 .admin-login-title {
   font-family: "Quicksand", Arial, sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: #fff;
-  margin: 0 0 0.3em;
-}
-
-.admin-login-sub {
-  font-family: "Quicksand", Arial, sans-serif;
-  font-size: 13px;
-  color: rgba(255,255,255,0.5);
-  margin: 0 0 2em;
+  color: var(--text-dark);
+  margin: 0 0 1.2em;
 }
 
 .admin-login-form { text-align: left; }
 
 .admin-input-wrap {
   position: relative;
-  margin-bottom: 1em;
+  margin-bottom: 1.2em;
 }
 
 .admin-input-icon {
@@ -1169,21 +1153,21 @@ a.cert-card:hover {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255,255,255,0.4);
+  color: rgba(0, 0, 0, 0.35);
   font-size: 14px;
 }
 
 .admin-input {
   width: 100%;
   padding: 12px 14px 12px 40px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 10px;
-  color: #fff;
+  color: #000000;
   font-family: "Quicksand", Arial, sans-serif;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.25s, background 0.25s;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
   box-sizing: border-box;
 }
 
@@ -1193,24 +1177,21 @@ a.cert-card:hover {
 
 .admin-input:focus {
   border-color: #FCCE04;
-  background: rgba(252,206,4,0.08);
+  background: rgba(252, 206, 4, 0.04);
+  box-shadow: 0 4px 12px rgba(252, 206, 4, 0.08);
 }
 
-.admin-input::placeholder { color: rgba(255,255,255,0.3); }
+.admin-input::placeholder { color: rgba(0, 0, 0, 0.35); }
 
-/* Dashboard inputs get lighter background */
+/* Dashboard overrides */
 .admin-dashboard .admin-input {
   background: #fff;
   border: 1.5px solid #e2e8f0;
-  color: #1a202c;
-  padding-left: 14px;
 }
-
 .admin-dashboard .admin-input:focus {
   border-color: #FCCE04;
   background: #fffdf0;
 }
-
 .admin-dashboard .admin-input::placeholder { color: #a0aec0; }
 
 .admin-error {

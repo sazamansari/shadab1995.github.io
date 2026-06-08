@@ -63,7 +63,7 @@ function PageShell({ children }) {
 /* ─── Admin page (no sidebar canvas) ───────────────────────────── */
 function AdminShell() {
   return (
-    <div id="colorlib-page" style={{ background: '#f0f2f5', minHeight: '100vh' }}>
+    <div id="colorlib-page" style={{ background: '#f2f3f7', minHeight: '100vh' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2em 1.5em' }}>
         <AdminBlog />
         <Footer />

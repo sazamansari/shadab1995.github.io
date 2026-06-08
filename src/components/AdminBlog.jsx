@@ -4,6 +4,7 @@ import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '..
 
 
 // ─── Simple auth (stored in sessionStorage) ──────────────────────
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'md.shadab.azam.ansari@gmail.com';
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'shadab@admin2024';
 const SESSION_KEY = 'portfolio_admin_auth';
 
@@ -23,17 +24,25 @@ export default function AdminBlog() {
 
 // ─── Login Screen ─────────────────────────────────────────────────
 function AdminLogin({ onLogin }) {
+  const [email, setEmail] = useState('');
   const [pw, setPw]       = useState('');
   const [error, setError] = useState('');
   const [shake, setShake] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (pw === ADMIN_PASSWORD) {
+    if (!email.trim() || !pw.trim()) {
+      setError('Email and password are required.');
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+      return;
+    }
+
+    if (email.trim() === ADMIN_EMAIL && pw === ADMIN_PASSWORD) {
       sessionStorage.setItem(SESSION_KEY, 'true');
       onLogin();
     } else {
-      setError('Incorrect password. Try again.');
+      setError('Incorrect email or password. Try again.');
       setShake(true);
       setTimeout(() => setShake(false), 600);
     }
@@ -42,12 +51,21 @@ function AdminLogin({ onLogin }) {
   return (
     <div className="admin-login-page">
       <div className={`admin-login-card${shake ? ' shake' : ''}`}>
-        <div className="admin-login-icon">
-          <i className="fa fa-lock" />
-        </div>
         <h1 className="admin-login-title">Admin Access</h1>
-        <p className="admin-login-sub">Blog management · Shadab Azam Ansari</p>
         <form onSubmit={handleSubmit} className="admin-login-form">
+          <div className="admin-input-wrap">
+            <i className="fa fa-envelope admin-input-icon" />
+            <input
+              id="admin-email-input"
+              type="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setError(''); }}
+              placeholder="Email address"
+              className="admin-input"
+              autoFocus
+              required
+            />
+          </div>
           <div className="admin-input-wrap">
             <i className="fa fa-key admin-input-icon" />
             <input
@@ -55,14 +73,13 @@ function AdminLogin({ onLogin }) {
               type="password"
               value={pw}
               onChange={(e) => { setPw(e.target.value); setError(''); }}
-              placeholder="Enter admin password"
+              placeholder="Password"
               className="admin-input"
-              autoFocus
+              required
             />
           </div>
           {error && <p className="admin-error"><i className="fa fa-exclamation-circle" /> {error}</p>}
           <button type="submit" id="admin-login-btn" className="admin-btn-primary">
-            <i className="fa fa-sign-in" style={{ marginRight: '8px' }} />
             Sign In
           </button>
         </form>
