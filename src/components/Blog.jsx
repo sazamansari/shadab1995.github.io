@@ -13,6 +13,7 @@ export default function Blog() {
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState(null);
   const [search, setSearch]         = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 9;
@@ -36,6 +37,22 @@ export default function Blog() {
     return matchesCategory && matchesSearch;
   });
 
+  // Calculate dynamic counts for categories based on loaded articles
+  const categoryCounts = {
+    All: posts.length,
+    ...CATEGORIES.reduce((acc, cat) => {
+      if (cat !== 'All') {
+        acc[cat] = posts.filter((p) => p.category === cat).length;
+      }
+      return acc;
+    }, {})
+  };
+
+  // Autocomplete search suggestions (max 5)
+  const suggestions = search.trim() !== ''
+    ? posts.filter((post) => post.title.toLowerCase().includes(search.toLowerCase())).slice(0, 5)
+    : [];
+
   // Extract a Featured Article: Only show at page 1 when no filters/searches are active
   const isDefaultState = activeCategory === 'All' && search.trim() === '' && currentPage === 1;
   const featuredPost = isDefaultState && posts.length > 0 ? posts[0] : null;
@@ -52,6 +69,7 @@ export default function Blog() {
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
     setCurrentPage(1);
+    setShowSuggestions(true);
   };
 
   const handleCategorySelect = (cat) => {
@@ -103,24 +121,50 @@ export default function Blog() {
                   placeholder="Search articles..."
                   value={search}
                   onChange={handleSearchChange}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  autoComplete="off"
                 />
                 {search && (
                   <button className="search-clear-btn" onClick={() => { setSearch(''); setCurrentPage(1); }}>
                     <i className="fa fa-times" />
                   </button>
                 )}
+
+                {/* Suggestions List Dropdown */}
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="blog-search-suggestions" id="search-suggestions-dropdown">
+                    {suggestions.map((sug) => (
+                      <li
+                        key={sug.$id}
+                        className="blog-suggestion-item"
+                        onClick={() => {
+                          setSearch(sug.title);
+                          setShowSuggestions(false);
+                          setCurrentPage(1);
+                        }}
+                      >
+                        <i className="fa fa-file-text-o" style={{ opacity: 0.5 }} />
+                        <span>{sug.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div className="blog-categories-wrap">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    className={`blog-category-btn${activeCategory === cat ? ' active' : ''}`}
-                    onClick={() => handleCategorySelect(cat)}
-                  >
-                    {cat}
-                  </button>
-                ))}
+                {CATEGORIES.map((cat) => {
+                  const count = categoryCounts[cat] || 0;
+                  return (
+                    <button
+                      key={cat}
+                      className={`blog-category-btn${activeCategory === cat ? ' active' : ''}`}
+                      onClick={() => handleCategorySelect(cat)}
+                    >
+                      {cat} <span className="cat-count">{count}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -187,12 +231,62 @@ export default function Blog() {
                     </button>
                   </div>
                 )}
+
+                {/* Newsletter Subscription Card */}
+                <AnimateBox effect="fadeIn" delay={150}>
+                  <NewsletterCard />
+                </AnimateBox>
               </>
             )}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function NewsletterCard() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const isSubscribed = localStorage.getItem('blog_subscribed');
+    if (isSubscribed) {
+      setSubmitted(true);
+    }
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) return;
+    localStorage.setItem('blog_subscribed', 'true');
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="blog-newsletter-card">
+      <div className="newsletter-content">
+        <h3>Join the Tech Newsletter</h3>
+        <p>Get high-quality insights on AWS, Docker, Kubernetes, and Full Stack development sent straight to your inbox.</p>
+        {submitted ? (
+          <div className="newsletter-success" id="newsletter-success-toast">
+            <i className="fa fa-check-circle" /> Thank you! You've successfully subscribed.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="newsletter-form">
+            <input
+              id="newsletter-email-input"
+              type="email"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <button type="submit" id="newsletter-subscribe-btn">Subscribe</button>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
 

@@ -89,12 +89,12 @@ function SEOManager() {
   useEffect(() => {
     const path = location.pathname;
 
-    let title = "Md Shadab Azam Ansari | Software Engineer | Frontend Engineer";
+    let title = "Md Shadab Azam Ansari | Software Engineer | Cloud & DevOps Engineer";
     let description = "Md Shadab Azam Ansari is a passionate software engineer with expertise in front-end applications and professional websites. Cloud & DevOps Engineer with AWS, Docker, Kubernetes expertise.";
 
     switch (path) {
       case '/':
-        title = "Md Shadab Azam Ansari | Software, Cloud & DevOps Engineer";
+        title = "Md Shadab Azam Ansari | Software Engineer | Cloud & DevOps Engineer";
         description = "Portfolio of Md Shadab Azam Ansari, a Cloud & DevOps Engineer specializing in AWS, Docker, Kubernetes, Terraform, Node.js, and React.";
         break;
       case '/skills':
@@ -129,33 +129,41 @@ function SEOManager() {
         break;
     }
 
+    const fullUrl = `https://md-shadab-azam-ansari.vercel.app/#${path === '/' ? '' : path}`;
+
     // Set page title
     document.title = title;
 
-    // Set meta description
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute('content', description);
-    }
+    // Helper to set or create meta tag
+    const setMetaTag = (attrName, attrValue, content) => {
+      let element = document.querySelector(`meta[${attrName}="${attrValue}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attrName, attrValue);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
 
-    // Set Open Graph description
-    const ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) {
-      ogDesc.setAttribute('content', description);
-    }
+    // Set meta tags
+    setMetaTag('name', 'description', description);
+    setMetaTag('property', 'og:title', title);
+    setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:url', fullUrl);
+    setMetaTag('property', 'og:image', 'https://md-shadab-azam-ansari.vercel.app/profile.jpeg');
 
-    // Set Open Graph title
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute('content', title);
-    }
+    setMetaTag('name', 'twitter:title', title);
+    setMetaTag('name', 'twitter:description', description);
+    setMetaTag('name', 'twitter:image', 'https://md-shadab-azam-ansari.vercel.app/profile.jpeg');
 
-    // Set Open Graph URL
-    const ogUrl = document.querySelector('meta[property="og:url"]');
-    if (ogUrl) {
-      const fullUrl = `https://md-shadab-azam-ansari.vercel.app/#${path === '/' ? '' : path}`;
-      ogUrl.setAttribute('content', fullUrl);
+    // Set canonical link
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
     }
+    canonicalLink.setAttribute('href', fullUrl);
   }, [location]);
 
   return null;
