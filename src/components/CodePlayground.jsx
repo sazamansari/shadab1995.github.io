@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AnimateBox from './AnimateBox';
 
-// Default templates for languages
+
 const TEMPLATES = {
   javascript: {
     name: 'Quick Sort Algorithm',
@@ -140,7 +140,7 @@ export default function CodePlayground() {
   
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState(TEMPLATES.javascript.code);
-  const [activeTab, setActiveTab] = useState('console'); // 'console' or 'preview'
+  const [activeTab, setActiveTab] = useState('console'); 
   const [logs, setLogs] = useState([]);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -149,21 +149,21 @@ export default function CodePlayground() {
   const lineNumbersRef = useRef(null);
   const iframeRef = useRef(null);
 
-  // Sync scrolling of textarea and line numbers
+  
   const handleScroll = () => {
     if (textareaRef.current && lineNumbersRef.current) {
       lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
     }
   };
 
-  // Decode code parameter from URL query params or React router state
+  
   useEffect(() => {
     if (location.state && location.state.code) {
       setCode(location.state.code);
       if (location.state.language) {
         setLanguage(location.state.language.toLowerCase());
       }
-      // Auto-set the correct visual tab
+      
       if (location.state.language && location.state.language.toLowerCase() === 'html') {
         setActiveTab('preview');
       } else {
@@ -178,7 +178,7 @@ export default function CodePlayground() {
 
     if (codeParam) {
       try {
-        // Safe base64 decoding for Unicode strings
+        
         const decodedCode = decodeURIComponent(escape(atob(codeParam)));
         setCode(decodedCode);
         if (langParam) {
@@ -193,7 +193,7 @@ export default function CodePlayground() {
     }
   }, [location]);
 
-  // Update editor templates on selection changes
+  
   const handleTemplateChange = (e) => {
     const key = e.target.value;
     if (TEMPLATES[key]) {
@@ -211,7 +211,7 @@ export default function CodePlayground() {
     }
   };
 
-  // Override Tab key behavior to insert spaces instead of moving focus
+  
   const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -223,14 +223,14 @@ export default function CodePlayground() {
       const newValue = value.substring(0, start) + '    ' + value.substring(end);
       setCode(newValue);
       
-      // Reset cursor position
+      
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 4;
       }, 0);
     }
   };
 
-  // Listen for logs from the executing JavaScript iframe
+  
   useEffect(() => {
     const handleMessage = (e) => {
       if (e.data && e.data.type === 'PLAYGROUND_CONSOLE_LOG') {
@@ -241,7 +241,7 @@ export default function CodePlayground() {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  // Run the code evaluation
+  
   const runCode = () => {
     setLogs([{ type: 'system', text: 'Compiling and executing script...' }]);
 
@@ -257,12 +257,12 @@ export default function CodePlayground() {
     }
   };
 
-  // JS Sandboxing via dynamic iframe
+  
   const executeJavaScript = (jsCode) => {
-    // Clear and prepare output logs
+    
     setLogs([{ type: 'system', text: 'Running JS Sandbox...' }]);
 
-    // HTML wrapper to redirect console outputs in sandboxed iframe
+    
     const iframeHtml = `
       <!DOCTYPE html>
       <html>
@@ -299,15 +299,15 @@ export default function CodePlayground() {
       </html>
     `;
 
-    // Load in preview iframe container
+    
     if (iframeRef.current) {
       iframeRef.current.srcdoc = iframeHtml;
     }
   };
 
-  // HTML live reloading inside iframe
+  
   const executeHTML = (htmlCode) => {
-    // We inject a console interceptor script to catch any scripts inside HTML
+    
     const injectionScript = `
       <script>
         const sendLog = (type, text) => {
@@ -326,7 +326,7 @@ export default function CodePlayground() {
       </script>
     `;
 
-    // Try injecting console capture right after head
+    
     let updatedHtml = htmlCode;
     if (htmlCode.includes('<head>')) {
       updatedHtml = htmlCode.replace('<head>', '<head>' + injectionScript);
@@ -341,7 +341,7 @@ export default function CodePlayground() {
     }
   };
 
-  // Python simulator transpilation
+  
   const executePython = (pyCode) => {
     try {
       const simLogs = [];
@@ -350,16 +350,16 @@ export default function CodePlayground() {
       const lines = pyCode.split('\n');
       let jsCode = '';
       let loopIndentStack = [];
-      let indentSpaces = 4; // standard PEP8 indent size
+      let indentSpaces = 4; 
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         const trimmed = line.trim();
         
-        // Count leading spaces of current line
+        
         const leadingSpaces = line.length - line.trimStart().length;
 
-        // Close any loops if indent levels have decreased
+        
         while (loopIndentStack.length > 0 && leadingSpaces < loopIndentStack[loopIndentStack.length - 1]) {
           jsCode += '}\n';
           loopIndentStack.pop();
@@ -369,33 +369,33 @@ export default function CodePlayground() {
           continue;
         }
 
-        // Print Statement Translation
-        // print("text", variable) -> console.log("text", variable)
+        
+        
         if (trimmed.startsWith('print(')) {
           const contents = trimmed.substring(6, trimmed.lastIndexOf(')'));
           
-          // Re-write python commas to + strings in js evaluation safely
+          
           jsCode += `console.log(${contents});\n`;
         }
         
-        // Variable Assignments
-        // x = 10 -> let x = 10
-        // (if x is not already declared we prepend let/var)
+        
+        
+        
         else if (/^[a-zA-Z_][a-zA-Z0-9_]*\s*=/.test(trimmed)) {
           const varName = trimmed.split('=')[0].trim();
           const valPart = trimmed.substring(trimmed.indexOf('=') + 1).trim();
           
-          // Prepend let if it is a new variable in scope
+          
           jsCode += `if (typeof ${varName} === 'undefined') { var ${varName} = ${valPart}; } else { ${varName} = ${valPart}; }\n`;
         }
 
-        // Simple Loops
-        // for i in range(10): -> for (var i = 0; i < 10; i++) {
+        
+        
         else if (trimmed.startsWith('for ') && trimmed.includes(' in range(') && trimmed.endsWith(':')) {
           const loopVar = trimmed.substring(4, trimmed.indexOf(' in ')).trim();
           const rangeExpr = trimmed.substring(trimmed.indexOf('range(') + 6, trimmed.lastIndexOf('):')).trim();
           
-          // Check if range parameter is a start,stop tuple e.g. range(1, 10)
+          
           let loopStart = 0;
           let loopEnd = rangeExpr;
           if (rangeExpr.includes(',')) {
@@ -408,19 +408,19 @@ export default function CodePlayground() {
           loopIndentStack.push(leadingSpaces + indentSpaces);
         }
         
-        // General fallback arithmetic / assignment statements
+        
         else {
           jsCode += trimmed + ';\n';
         }
       }
 
-      // Close remaining open brackets
+      
       while (loopIndentStack.length > 0) {
         jsCode += '}\n';
         loopIndentStack.pop();
       }
 
-      // Execute generated logic under captured logs
+      
       const capturedLogs = [];
       const originalLog = console.log;
       console.log = (...args) => {
@@ -430,7 +430,7 @@ export default function CodePlayground() {
         });
       };
 
-      // Wrap inside a try catch block
+      
       try {
         const executor = new Function(jsCode);
         executor();
@@ -438,7 +438,7 @@ export default function CodePlayground() {
         simLogs.push({ type: 'error', text: `RuntimeError: ${err.message}` });
       }
 
-      // Restore console logs
+      
       console.log = originalLog;
 
       if (capturedLogs.length > 0) {
@@ -452,15 +452,15 @@ export default function CodePlayground() {
     }
   };
 
-  // Clear Terminal Output
+  
   const clearConsole = () => {
     setLogs([]);
   };
 
-  // Generate and Copy base64 Share Link
+  
   const shareCode = () => {
     try {
-      // Safe base64 encoding for Unicode strings
+      
       const base64Code = btoa(unescape(encodeURIComponent(code)));
       const shareUrl = `${window.location.origin}${window.location.pathname}#/playground?code=${base64Code}&lang=${language}`;
       
@@ -473,7 +473,7 @@ export default function CodePlayground() {
     }
   };
 
-  // Count lines for editor numbers
+  
   const lineCount = code.split('\n').length;
   const lineNumbersArray = Array.from({ length: Math.max(lineCount, 1) }, (_, i) => i + 1);
 
@@ -559,9 +559,9 @@ export default function CodePlayground() {
         </div>
       </AnimateBox>
 
-      {/* Editor & Output split layout */}
+      {}
       <div className="playground-workspace">
-        {/* Editor Wrapper */}
+        {}
         <div className="playground-editor-wrapper">
           <div className="playground-editor-header">
             <span className="editor-filename">
@@ -601,7 +601,7 @@ export default function CodePlayground() {
           </div>
         </div>
 
-        {/* Output Console/Preview wrapper */}
+        {}
         <div className="playground-output-wrapper">
           <div className="playground-output-header">
             <button

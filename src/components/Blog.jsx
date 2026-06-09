@@ -1,11 +1,11 @@
-// Blog section – Restructured into a modern two-column feed with interactive widgets
-// Fetches from Appwrite or falls back to mock data
+
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimateBox from './AnimateBox';
 import { getBlogPosts } from '../appwrite';
 
-const CATEGORIES = ['All', 'DevOps', 'AWS', 'Kubernetes', 'Docker', 'CI/CD', 'Full Stack', 'Career'];
+const CATEGORIES = ['All', 'DevOps', 'AWS', 'Azure', 'Kubernetes', 'Docker', 'CI/CD', 'Terraform', 'Linux', 'React', 'Node.js', 'Career'];
 
 export default function Blog() {
   const [posts, setPosts]           = useState([]);
@@ -16,9 +16,9 @@ export default function Blog() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const [layoutMode, setLayoutMode] = useState('grid'); // 'grid' | 'list'
+  const [layoutMode, setLayoutMode] = useState('grid'); 
   
-  // Mini Playground states
+  
   const [miniLang, setMiniLang] = useState('javascript');
   const [miniCode, setMiniCode] = useState('// JavaScript\nconst name = "Shadab";\nconsole.log(`Hello, welcome to ${name}\'s blog!`);');
   const [miniLogs, setMiniLogs] = useState([]);
@@ -35,7 +35,7 @@ export default function Blog() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Filter posts based on category and search keywords
+  
   const filteredPosts = posts.filter((post) => {
     const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
     const matchesSearch =
@@ -44,7 +44,7 @@ export default function Blog() {
     return matchesCategory && matchesSearch;
   });
 
-  // Calculate dynamic counts for categories based on loaded articles
+  
   const categoryCounts = {
     All: posts.length,
     ...CATEGORIES.reduce((acc, cat) => {
@@ -55,19 +55,19 @@ export default function Blog() {
     }, {})
   };
 
-  // Autocomplete search suggestions (max 5)
+  
   const suggestions = search.trim() !== ''
     ? posts.filter((post) => post.title.toLowerCase().includes(search.toLowerCase())).slice(0, 5)
     : [];
 
-  // Extract a Featured Article: Only show at page 1 when no filters/searches are active
+  
   const isDefaultState = activeCategory === 'All' && search.trim() === '' && currentPage === 1;
   const featuredPost = isDefaultState && posts.length > 0 ? posts[0] : null;
 
-  // Exclude featured post from normal grid to avoid duplication
+  
   const normalPosts = filteredPosts.filter((post) => !featuredPost || post.$id !== featuredPost.$id);
 
-  // Calculate pagination variables
+  
   const totalPages = Math.ceil(normalPosts.length / postsPerPage);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -84,7 +84,7 @@ export default function Blog() {
     setCurrentPage(1);
   };
 
-  // Scroll to blog section when page changes
+  
   useEffect(() => {
     if (!loading && currentPage > 1) {
       const element = document.getElementById('blog');
@@ -94,7 +94,7 @@ export default function Blog() {
     }
   }, [currentPage, loading]);
 
-  // Mini IDE execution scripts
+  
   const runMiniCode = () => {
     setMiniLogs([{ type: 'system', text: 'Running...' }]);
     
@@ -195,10 +195,10 @@ export default function Blog() {
               </div>
             </AnimateBox>
 
-            {/* RESTURED TWO-COLUMN GRID SYSTEM */}
+            {}
             <div className="blog-layout-container">
               
-              {/* Left Column: Content Feed */}
+              {}
               <div className="blog-main-feed">
                 {featuredPost && (
                   <AnimateBox effect="fadeIn" delay={100}>
@@ -206,7 +206,7 @@ export default function Blog() {
                   </AnimateBox>
                 )}
 
-                {/* Feed Controls (Stats + Grid/List Toggles) */}
+                {}
                 <div className="blog-feed-header">
                   <p className="blog-feed-stats">
                     Showing {filteredPosts.length} post{filteredPosts.length !== 1 ? 's' : ''} {activeCategory !== 'All' ? `in "${activeCategory}"` : ''}
@@ -260,7 +260,7 @@ export default function Blog() {
                       </div>
                     )}
 
-                    {/* Pagination Controls */}
+                    {}
                     {totalPages > 1 && (
                       <div className="blog-pagination">
                         <button
@@ -296,10 +296,10 @@ export default function Blog() {
                 )}
               </div>
 
-              {/* Right Column: Sidebar Widgets */}
+              {}
               <div className="blog-sidebar-widgets">
                 
-                {/* Search Widget */}
+                {}
                 <div className="blog-sidebar-widget widget-search">
                   <h4 className="widget-title">
                     <i className="fa fa-search" /> Search Articles
@@ -343,7 +343,7 @@ export default function Blog() {
                   </div>
                 </div>
 
-                {/* Categories Cloud Widget */}
+                {}
                 <div className="blog-sidebar-widget widget-tags">
                   <h4 className="widget-title">
                     <i className="fa fa-tags" /> Categories
@@ -351,7 +351,7 @@ export default function Blog() {
                   <div className="widget-tags-cloud">
                     {CATEGORIES.map((cat) => {
                       const count = categoryCounts[cat] || 0;
-                      // Generate lowercase class strings for custom coloring
+                      
                       const catClass = cat.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
                       return (
                         <button
@@ -366,7 +366,7 @@ export default function Blog() {
                   </div>
                 </div>
 
-                {/* Mini IDE Playground Widget */}
+                {}
                 <div className="blog-sidebar-widget widget-playground">
                   <h4 className="widget-title">
                     <i className="fa fa-code" /> Mini Coding Sandbox
@@ -426,7 +426,7 @@ export default function Blog() {
                   </div>
                 </div>
 
-                {/* Compact Newsletter Widget */}
+                {}
                 <div className="blog-sidebar-widget widget-newsletter">
                   <h4 className="widget-title">
                     <i className="fa fa-paper-plane" /> Newsletter
@@ -513,7 +513,7 @@ function FeaturedBlogCard({ post }) {
     <div className="blog-featured-card">
       {post.coverImage && (
         <div className="featured-img">
-          <img src={post.coverImage} alt={post.title} loading="lazy" />
+          <img src={post.coverImage} alt={post.title} loading="lazy" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80'; }} />
           <span className="featured-badge">Featured Article</span>
         </div>
       )}
@@ -548,7 +548,7 @@ function BlogCard({ post, layoutMode }) {
     <div className="blog-entry">
       {post.coverImage && (
         <div className="blog-img">
-          <img src={post.coverImage} alt={post.title} loading="lazy" />
+          <img src={post.coverImage} alt={post.title} loading="lazy" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80'; }} />
         </div>
       )}
       <div className="desc">

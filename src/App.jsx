@@ -1,6 +1,6 @@
-// App.jsx – multi-page portfolio with React Router
-// Each nav item is its own route; only one page renders at a time.
-// HashRouter keeps GitHub Pages static hosting working without server rewrites.
+
+
+
 
 import React, { useRef, useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
@@ -19,7 +19,7 @@ import Footer         from './components/Footer';
 
 import { useCanvasAnimation } from './useCanvasAnimation';
 
-/* ─── Shared page shell (sidebar + canvas + one content page) ───── */
+
 function PageShell({ children }) {
   const canvasRef          = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -35,10 +35,10 @@ function PageShell({ children }) {
 
   return (
     <div id="colorlib-page">
-      {/* Floating 0/1 canvas background */}
+      {}
       <canvas id="canvas" ref={canvasRef} />
 
-      {/* Mobile hamburger */}
+      {}
       <a
         href="#"
         className={`js-colorlib-nav-toggle colorlib-nav-toggle${menuOpen ? ' active' : ''}`}
@@ -49,10 +49,10 @@ function PageShell({ children }) {
         <i />
       </a>
 
-      {/* Sidebar navigation */}
+      {}
       <Sidebar menuOpen={menuOpen} toggleMenu={toggleMenu} />
 
-      {/* Main content – only the current page */}
+      {}
       <div id="colorlib-main">
         {children}
         <Footer />
@@ -61,7 +61,7 @@ function PageShell({ children }) {
   );
 }
 
-/* ─── Admin page (no sidebar canvas) ───────────────────────────── */
+
 function AdminShell() {
   return (
     <div id="colorlib-page" style={{ background: '#f2f3f7', minHeight: '100vh' }}>
@@ -73,7 +73,7 @@ function AdminShell() {
   );
 }
 
-/* ─── Individual page wrappers ──────────────────────────────────── */
+
 const AboutPage          = () => <PageShell><About /></PageShell>;
 const SkillsPage         = () => <PageShell><Skills /></PageShell>;
 const ExperiencePage     = () => <PageShell><Experience /></PageShell>;
@@ -84,7 +84,7 @@ const BlogPostPage       = () => <PageShell><BlogPost /></PageShell>;
 const PlaygroundPage     = () => <PageShell><CodePlayground /></PageShell>;
 const AdminPage          = () => <AdminShell />;
 
-/* ─── SEO Manager to dynamically update document title & meta tags ─── */
+
 function SEOManager() {
   const location = useLocation();
 
@@ -137,10 +137,10 @@ function SEOManager() {
 
     const fullUrl = `https://md-shadab-azam-ansari.vercel.app/#${path === '/' ? '' : path}`;
 
-    // Set page title
+    
     document.title = title;
 
-    // Helper to set or create meta tag
+    
     const setMetaTag = (attrName, attrValue, content) => {
       let element = document.querySelector(`meta[${attrName}="${attrValue}"]`);
       if (!element) {
@@ -151,7 +151,7 @@ function SEOManager() {
       element.setAttribute('content', content);
     };
 
-    // Set meta tags
+    
     setMetaTag('name', 'description', description);
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
@@ -162,7 +162,7 @@ function SEOManager() {
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', 'https://md-shadab-azam-ansari.vercel.app/profile.jpeg');
 
-    // Set canonical link
+    
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
@@ -175,7 +175,7 @@ function SEOManager() {
   return null;
 }
 
-/* ─── App root with router ─────────────────────────────────────── */
+
 export default function App() {
   return (
     <HashRouter>
@@ -190,7 +190,7 @@ export default function App() {
         <Route path="/blog/:id"        element={<BlogPostPage />} />
         <Route path="/playground"      element={<PlaygroundPage />} />
         <Route path="/admin"           element={<AdminPage />} />
-        {/* Fallback – redirect unknown paths to About */}
+        {}
         <Route path="*"               element={<AboutPage />} />
       </Routes>
     </HashRouter>

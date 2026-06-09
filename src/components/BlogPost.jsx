@@ -1,4 +1,4 @@
-// BlogPost – single post detail view, reached via /blog/:id
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getBlogPost, getBlogPosts } from '../appwrite';
@@ -29,10 +29,10 @@ export default function BlogPost() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // Scroll to top on load
+  
   useEffect(() => { window.scrollTo(0, 0); }, [id]);
 
-  // Dynamically update SEO metadata for individual blog posts
+  
   useEffect(() => {
     if (!post) return;
 
@@ -59,7 +59,7 @@ export default function BlogPost() {
       element.setAttribute('content', content);
     };
 
-    const fullUrl = `https://md-shadab-azam-ansari.vercel.app/#/blog/${post.$id || id}`;
+    const fullUrl = `${window.location.origin}${window.location.pathname}#/blog/${post.$id || id}`;
 
     setMetaTag('name', 'description', description);
     setMetaTag('property', 'og:title', title);
@@ -79,7 +79,7 @@ export default function BlogPost() {
     }
   }, [post, id]);
 
-  // Reading scroll progress tracker
+  
   useEffect(() => {
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -92,7 +92,7 @@ export default function BlogPost() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Construct Table of Contents from markdown headers
+  
   useEffect(() => {
     if (!post || !post.content) return;
     const lines = post.content.split('\n');
@@ -112,7 +112,7 @@ export default function BlogPost() {
     setToc(extractedHeadings);
   }, [post]);
 
-  // Load related posts
+  
   useEffect(() => {
     if (!post) return;
     getBlogPosts()
@@ -148,7 +148,7 @@ export default function BlogPost() {
 
   return (
     <div className="blog-post-wrapper" style={{ minHeight: '100vh', paddingTop: '3em' }}>
-      {/* Scroll Progress Bar at the Top */}
+      {}
       <div className="reading-progress-bar-container">
         <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />
       </div>
@@ -203,7 +203,7 @@ export default function BlogPost() {
                 )}
               </div>
 
-              {/* Share utilities widget */}
+              {}
               <div className="blog-share-widget">
                 <span className="share-title">Share Article:</span>
                 <button className="share-btn twitter" onClick={shareTwitter} id="btn-share-twitter">
@@ -224,10 +224,11 @@ export default function BlogPost() {
                 src={post.coverImage}
                 alt={post.title}
                 className="post-cover-img"
+                onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80'; }}
               />
             )}
 
-            {/* Table of Contents card */}
+            {}
             {toc.length > 0 && (
               <div className="blog-toc-card" id="blog-toc-card">
                 <h4>Table of Contents</h4>
@@ -253,7 +254,7 @@ export default function BlogPost() {
               {renderContent(post.content)}
             </div>
 
-            {/* Related Articles grid */}
+            {}
             {relatedPosts.length > 0 && (
               <div className="related-articles-section" id="related-articles-section">
                 <h3>Related Articles</h3>
@@ -286,11 +287,7 @@ export default function BlogPost() {
   );
 }
 
-/**
- * Renders plain-text blog content with basic markdown-like formatting.
- * Handles: ## headings, ``` code blocks, **bold**, bullet lists, paragraphs.
- * Automatically detects and elevates shell commands and server configurations to interactive code blocks.
- */
+
 export function renderContent(content) {
   if (!content) return null;
 
@@ -298,7 +295,7 @@ export function renderContent(content) {
   return blocks.map((block, i) => {
     const trimmed = block.trim();
 
-    // Code block
+    
     if (trimmed.startsWith('```')) {
       const lines = trimmed.split('\n');
       const lang  = lines[0].replace('```', '').trim();
@@ -306,21 +303,33 @@ export function renderContent(content) {
       return <InteractiveCodeBlock key={i} code={code} lang={lang} />;
     }
 
-    // H2 heading
+    
     if (trimmed.startsWith('## ')) {
-      const title = trimmed.replace(/^## /, '');
+      const [headingLine, ...bodyLines] = trimmed.split('\n');
+      const title = headingLine.replace(/^## /, '');
       const headingId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      return <h2 key={i} id={headingId}>{title}</h2>;
+      return (
+        <React.Fragment key={i}>
+          <h2 id={headingId}>{title}</h2>
+          {bodyLines.length > 0 && <p>{inlineFormat(bodyLines.join(' '))}</p>}
+        </React.Fragment>
+      );
     }
 
-    // H3 heading
+    
     if (trimmed.startsWith('### ')) {
-      const title = trimmed.replace(/^### /, '');
+      const [headingLine, ...bodyLines] = trimmed.split('\n');
+      const title = headingLine.replace(/^### /, '');
       const headingId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      return <h3 key={i} id={headingId}>{title}</h3>;
+      return (
+        <React.Fragment key={i}>
+          <h3 id={headingId}>{title}</h3>
+          {bodyLines.length > 0 && <p>{inlineFormat(bodyLines.join(' '))}</p>}
+        </React.Fragment>
+      );
     }
 
-    // Bullet list
+    
     if (trimmed.split('\n').every((l) => l.trimStart().startsWith('- '))) {
       return (
         <ul key={i} style={{ paddingLeft: '1.5em' }}>
@@ -333,7 +342,7 @@ export function renderContent(content) {
       );
     }
 
-    // Numbered list
+    
     if (trimmed.split('\n').every((l) => /^\d+\./.test(l.trimStart()))) {
       return (
         <ol key={i} style={{ paddingLeft: '1.5em' }}>
@@ -346,18 +355,18 @@ export function renderContent(content) {
       );
     }
 
-    // Smart Nginx Configuration Block Detection
+    
     const isNginxConfig = trimmed.includes('server {') || trimmed.includes('location /') || (trimmed.includes('listen ') && trimmed.includes(';')) || (trimmed.includes('server_name ') && trimmed.includes(';'));
     if (isNginxConfig) {
       return <InteractiveCodeBlock key={i} code={trimmed} lang="nginx" />;
     }
 
-    // Smart JSON Block Detection
+    
     if (trimmed.startsWith('{') && trimmed.endsWith('}') && (trimmed.includes('":') || trimmed.includes("':"))) {
       return <InteractiveCodeBlock key={i} code={trimmed} lang="json" />;
     }
 
-    // Smart Bash Command Detection
+    
     const lines = block.split('\n');
     const hasAnyCode = lines.some(line => {
       const COMMAND_WORDS = [
@@ -395,12 +404,12 @@ export function renderContent(content) {
       );
     }
 
-    // Default paragraph
+    
     return <p key={i}>{inlineFormat(trimmed)}</p>;
   });
 }
 
-/** Helper function to parse plain text lines looking for shell command code blocks */
+
 export function parseLineWithCode(line) {
   const COMMAND_WORDS = [
     'sudo', 'npm', 'npx', 'yarn', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
@@ -429,7 +438,7 @@ export function parseLineWithCode(line) {
     const prefixText = line.substring(0, codeStartIdx).trim();
     const rest = line.substring(codeStartIdx);
     
-    // Separation keywords for next text step description
+    
     const separatorRegex = /\b(Step \d+|[1-9]\d*\.\s+|Add the following|Ensure proper|Create the required|Create a production|Install Nginx|Start the nginx)\b/i;
     const match = rest.substring(matchingWord.length).match(separatorRegex);
     
@@ -456,7 +465,7 @@ export function parseLineWithCode(line) {
   return { isCode: false, text: line };
 }
 
-/** Handles **bold** and `inline code` inside a text string */
+
 export function inlineFormat(text) {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
   return parts.map((part, i) => {
@@ -521,4 +530,3 @@ export function InteractiveCodeBlock({ code, lang }) {
     </div>
   );
 }
-

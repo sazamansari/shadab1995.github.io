@@ -1329,7 +1329,7 @@ a.cert-card:hover {
 
 .admin-table-head {
   display: grid;
-  grid-template-columns: 3fr 1fr 1.2fr 100px;
+  grid-template-columns: 60px 3fr 1.2fr 1.2fr 100px;
   gap: 1em;
   padding: 1em 1.5em;
   background: #f7fafc;
@@ -1343,7 +1343,7 @@ a.cert-card:hover {
 
 .admin-table-row {
   display: grid;
-  grid-template-columns: 3fr 1fr 1.2fr 100px;
+  grid-template-columns: 60px 3fr 1.2fr 1.2fr 100px;
   gap: 1em;
   padding: 1em 1.5em;
   border-bottom: 1px solid #f0f4f8;
@@ -1456,6 +1456,144 @@ a.cert-card:hover {
 }
 
 .admin-textarea--tall { min-height: 300px; font-family: 'Courier New', monospace; font-size: 13px; }
+
+.admin-post-fields {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25em;
+}
+
+.admin-ide-workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  min-height: 620px;
+}
+
+.admin-ide-workspace--split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.admin-ide-editor,
+.admin-ide-preview {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid #30363d;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.admin-ide-editor {
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+}
+
+.admin-ide-tabbar,
+.admin-ide-preview-header {
+  min-height: 42px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #161b22;
+  color: #c9d1d9;
+  border-bottom: 1px solid #30363d;
+  font: 600 12px/1.4 "Quicksand", sans-serif;
+}
+
+.admin-ide-tabbar span:last-child {
+  color: #7ee787;
+  font-size: 11px;
+}
+
+.admin-ide-editor-body {
+  flex: 1;
+  min-height: 540px;
+  display: flex;
+  overflow: hidden;
+}
+
+.admin-ide-line-numbers {
+  flex: 0 0 46px;
+  overflow: hidden;
+  padding: 16px 10px 16px 0;
+  background: #0d1117;
+  color: #484f58;
+  border-right: 1px solid #21262d;
+  text-align: right;
+  font: 13px/21px Consolas, "Courier New", monospace;
+  user-select: none;
+}
+
+.admin-ide-textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  resize: none;
+  border: 0;
+  outline: 0;
+  padding: 16px;
+  background: #0d1117;
+  color: #e6edf3;
+  caret-color: #58a6ff;
+  white-space: pre-wrap;
+  tab-size: 2;
+  font: 13px/21px Consolas, "Courier New", monospace;
+}
+
+.admin-ide-textarea::selection { background: rgba(56, 139, 253, 0.35); }
+
+.admin-ide-statusbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 12px;
+  background: #0969da;
+  color: #fff;
+  font-size: 10px;
+}
+
+.admin-ide-preview {
+  background: #fff;
+  border-color: #e2e8f0;
+}
+
+.admin-ide-preview-header {
+  justify-content: flex-start;
+  background: #f8fafc;
+  color: #475569;
+  border-bottom-color: #e2e8f0;
+}
+
+.admin-ide-preview-scroll {
+  height: 594px;
+  overflow: auto;
+  padding: 24px;
+}
+
+.admin-ide-article {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.admin-preview-container {
+  margin-top: 1.5em;
+  padding: 3em 2.5em;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+}
+
+@media screen and (max-width: 900px) {
+  .admin-ide-workspace--split { grid-template-columns: 1fr; }
+  .admin-ide-editor-body { min-height: 440px; }
+  .admin-ide-preview-scroll { height: auto; max-height: 600px; }
+  .admin-ide-statusbar { flex-wrap: wrap; }
+}
 
 /* ── Toast ───────────────────────────────────────────────────────── */
 .admin-toast {
@@ -3480,6 +3618,9 @@ a.cert-card:hover {
   color: #fff !important;
 }
 
+.widget-tag-btn.cat-all:hover { border-color: var(--yellow); color: var(--yellow-dark); background: rgba(252, 206, 4, 0.05); }
+.widget-tag-btn.cat-all.active { background: var(--yellow) !important; border-color: var(--yellow) !important; color: var(--text-dark) !important; box-shadow: 0 4px 10px rgba(252, 206, 4, 0.2); }
+
 .widget-tag-btn.cat-aws:hover { border-color: #f9bf3f; color: #f9bf3f; background: rgba(249, 191, 63, 0.05); }
 .widget-tag-btn.cat-aws.active { background: #f9bf3f !important; border-color: #f9bf3f !important; box-shadow: 0 4px 10px rgba(249, 191, 63, 0.2); }
 
@@ -3497,6 +3638,21 @@ a.cert-card:hover {
 
 .widget-tag-btn.cat-full-stack:hover { border-color: #2fa499; color: #2fa499; background: rgba(47, 164, 153, 0.05); }
 .widget-tag-btn.cat-full-stack.active { background: #2fa499 !important; border-color: #2fa499 !important; box-shadow: 0 4px 10px rgba(47, 164, 153, 0.2); }
+
+.widget-tag-btn.cat-azure:hover { border-color: #0089d6; color: #0089d6; background: rgba(0, 137, 214, 0.05); }
+.widget-tag-btn.cat-azure.active { background: #0089d6 !important; border-color: #0089d6 !important; box-shadow: 0 4px 10px rgba(0, 137, 214, 0.2); }
+
+.widget-tag-btn.cat-terraform:hover { border-color: #5c4ee5; color: #5c4ee5; background: rgba(92, 78, 229, 0.05); }
+.widget-tag-btn.cat-terraform.active { background: #5c4ee5 !important; border-color: #5c4ee5 !important; box-shadow: 0 4px 10px rgba(92, 78, 229, 0.2); }
+
+.widget-tag-btn.cat-linux:hover { border-color: #333333; color: #333333; background: rgba(51, 51, 51, 0.05); }
+.widget-tag-btn.cat-linux.active { background: #333333 !important; border-color: #333333 !important; box-shadow: 0 4px 10px rgba(51, 51, 51, 0.2); }
+
+.widget-tag-btn.cat-react:hover { border-color: #00d8ff; color: #00d8ff; background: rgba(0, 216, 255, 0.05); }
+.widget-tag-btn.cat-react.active { background: #00d8ff !important; border-color: #00d8ff !important; color: var(--text-dark) !important; box-shadow: 0 4px 10px rgba(0, 216, 255, 0.2); }
+
+.widget-tag-btn.cat-nodejs:hover { border-color: #43853d; color: #43853d; background: rgba(67, 133, 61, 0.05); }
+.widget-tag-btn.cat-nodejs.active { background: #43853d !important; border-color: #43853d !important; box-shadow: 0 4px 10px rgba(67, 133, 61, 0.2); }
 
 .widget-tag-btn.cat-career:hover { border-color: #777; color: #777; background: rgba(119, 119, 119, 0.05); }
 .widget-tag-btn.cat-career.active { background: #777 !important; border-color: #777 !important; box-shadow: 0 4px 10px rgba(119, 119, 119, 0.2); }
@@ -3651,7 +3807,6 @@ a.cert-card:hover {
   text-align: center;
   margin-top: 18px;
 }
-
 
 
 
