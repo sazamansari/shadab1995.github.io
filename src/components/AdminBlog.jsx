@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '../appwrite';
+import { renderContent } from './BlogPost';
 
 
 // ─── Simple auth (stored in sessionStorage) ──────────────────────
@@ -226,6 +227,7 @@ function PostEditor({ post, onSave, onCancel }) {
   const [form, setForm]   = useState(post ? { ...post } : { ...EMPTY_POST });
   const [saving, setSaving] = useState(false);
   const [error, setError]   = useState('');
+  const [editorTab, setEditorTab] = useState('write'); // 'write' | 'preview'
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   
@@ -289,7 +291,27 @@ function PostEditor({ post, onSave, onCancel }) {
           <i className="fa fa-file-text-o" style={{ marginRight: '10px', color: '#FCCE04' }} />
           {post ? 'Edit Post' : 'New Post'}
         </h2>
-        <div className="admin-header-actions">
+        <div className="admin-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Tab selector toggles */}
+          <div className="layout-toggles" style={{ display: 'flex', gap: '4px', background: 'rgba(0,0,0,0.03)', padding: '3px', borderRadius: '8px' }}>
+            <button
+              type="button"
+              className={`layout-toggle-btn${editorTab === 'write' ? ' active' : ''}`}
+              onClick={() => setEditorTab('write')}
+              style={{ width: 'auto', padding: '4px 12px', height: '28px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', borderRadius: '6px' }}
+            >
+              Write
+            </button>
+            <button
+              type="button"
+              className={`layout-toggle-btn${editorTab === 'preview' ? ' active' : ''}`}
+              onClick={() => setEditorTab('preview')}
+              style={{ width: 'auto', padding: '4px 12px', height: '28px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', borderRadius: '6px' }}
+            >
+              Preview
+            </button>
+          </div>
+
           <button id="admin-save-btn" className="admin-btn-primary" onClick={handleSave} disabled={saving}>
             {saving ? <><i className="fa fa-spinner fa-spin" /> Saving…</> : <><i className="fa fa-save" /> Save Post</>}
           </button>
@@ -299,68 +321,92 @@ function PostEditor({ post, onSave, onCancel }) {
 
       {error && <p className="admin-error" style={{ marginBottom: '1em' }}><i className="fa fa-exclamation-circle" /> {error}</p>}
 
-      <div className="admin-form">
-        <div className="admin-form-row">
-          <label className="admin-label">Title *</label>
-          <input className="admin-input" value={form.title} onChange={(e) => set('title', e.target.value)} placeholder="Post title…" id="post-title-input" />
-        </div>
-        <div className="admin-form-row admin-form-row--2col">
-          <div>
-            <label className="admin-label">Category</label>
-            <select className="admin-input" value={form.category} onChange={(e) => set('category', e.target.value)} id="post-category-select">
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-            </select>
+      {editorTab === 'write' ? (
+        <div className="admin-form">
+          <div className="admin-form-row">
+            <label className="admin-label">Title *</label>
+            <input className="admin-input" value={form.title} onChange={(e) => set('title', e.target.value)} placeholder="Post title…" id="post-title-input" />
           </div>
-          <div>
-            <label className="admin-label">Date</label>
-            <input className="admin-input" type="date" value={form.date} onChange={(e) => set('date', e.target.value)} />
+          <div className="admin-form-row admin-form-row--2col">
+            <div>
+              <label className="admin-label">Category</label>
+              <select className="admin-input" value={form.category} onChange={(e) => set('category', e.target.value)} id="post-category-select">
+                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="admin-label">Date</label>
+              <input className="admin-input" type="date" value={form.date} onChange={(e) => set('date', e.target.value)} />
+            </div>
+            <div>
+              <label className="admin-label">Read Time</label>
+              <input className="admin-input" value={form.readTime} onChange={(e) => set('readTime', e.target.value)} placeholder="5 min read" />
+            </div>
           </div>
-          <div>
-            <label className="admin-label">Read Time</label>
-            <input className="admin-input" value={form.readTime} onChange={(e) => set('readTime', e.target.value)} placeholder="5 min read" />
+          <div className="admin-form-row">
+            <label className="admin-label">Cover Image URL</label>
+            <input className="admin-input" value={form.coverImage} onChange={(e) => set('coverImage', e.target.value)} placeholder="https://…" />
           </div>
-        </div>
-        <div className="admin-form-row">
-          <label className="admin-label">Cover Image URL</label>
-          <input className="admin-input" value={form.coverImage} onChange={(e) => set('coverImage', e.target.value)} placeholder="https://…" />
-        </div>
-        <div className="admin-form-row">
-          <label className="admin-label">Excerpt</label>
-          <textarea className="admin-input admin-textarea" rows={3} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} placeholder="Short description shown on blog cards…" />
-        </div>
-        <div className="admin-form-row">
-          <label className="admin-label">Content (Markdown) *</label>
-          
-          {/* Format Toolbar */}
-          <div className="admin-editor-toolbar">
-            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('bash')} title="Insert Bash Code">
-              <i className="fa fa-terminal" /> + Bash Code
-            </button>
-            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('javascript')} title="Insert JS Code">
-              <i className="fa fa-code" /> + JavaScript
-            </button>
-            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('html')} title="Insert HTML Sandbox">
-              <i className="fa fa-eye" /> + HTML Sandbox
-            </button>
-            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('nginx')} title="Insert Nginx Code">
-              <i className="fa fa-server" /> + Nginx Config
-            </button>
-            <button type="button" className="admin-toolbar-btn" onClick={wrapSelectionWithBackticks} title="Wrap highlighted text in code block">
-              <i className="fa fa-quote-left" /> Wrap Highlighted Text
-            </button>
+          <div className="admin-form-row">
+            <label className="admin-label">Excerpt</label>
+            <textarea className="admin-input admin-textarea" rows={3} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} placeholder="Short description shown on blog cards…" />
           </div>
+          <div className="admin-form-row">
+            <label className="admin-label">Content (Markdown) *</label>
+            
+            {/* Format Toolbar */}
+            <div className="admin-editor-toolbar">
+              <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('bash')} title="Insert Bash Code">
+                <i className="fa fa-terminal" /> + Bash Code
+              </button>
+              <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('javascript')} title="Insert JS Code">
+                <i className="fa fa-code" /> + JavaScript
+              </button>
+              <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('html')} title="Insert HTML Sandbox">
+                <i className="fa fa-eye" /> + HTML Sandbox
+              </button>
+              <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('nginx')} title="Insert Nginx Code">
+                <i className="fa fa-server" /> + Nginx Config
+              </button>
+              <button type="button" className="admin-toolbar-btn" onClick={wrapSelectionWithBackticks} title="Wrap highlighted text in code block">
+                <i className="fa fa-quote-left" /> Wrap Highlighted Text
+              </button>
+            </div>
 
-          <textarea
-            ref={textareaRef}
-            className="admin-input admin-textarea admin-textarea--tall"
-            rows={18}
-            value={form.content}
-            onChange={(e) => set('content', e.target.value)}
-            placeholder="Write your post in Markdown..."
-            id="post-content-textarea"
-          />
+            <textarea
+              ref={textareaRef}
+              className="admin-input admin-textarea admin-textarea--tall"
+              rows={18}
+              value={form.content}
+              onChange={(e) => set('content', e.target.value)}
+              placeholder="Write your post in Markdown..."
+              id="post-content-textarea"
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="admin-preview-container" style={{ background: '#ffffff', borderRadius: '16px', padding: '3em 2.5em', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 8px 30px rgba(0,0,0,0.02)', marginTop: '1.5em' }}>
+          <article className="blog-post-detail" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <div className="post-header" style={{ borderBottom: '1px solid #eee', paddingBottom: '1.5em', marginBottom: '2em' }}>
+              <h1 style={{ fontSize: '32px', marginBottom: '15px', fontFamily: '"Playfair Display", Georgia, serif', fontWeight: '700' }}>{form.title || 'Untitled Post'}</h1>
+              <div className="post-meta" style={{ display: 'flex', gap: '15px', color: '#777', fontSize: '13px', flexWrap: 'wrap' }}>
+                {form.date && <span><i className="fa fa-calendar" style={{ marginRight: '5px' }} />{form.date}</span>}
+                {form.category && <span><i className="fa fa-tag" style={{ marginRight: '5px' }} />{form.category}</span>}
+                {form.readTime && <span><i className="fa fa-clock-o" style={{ marginRight: '5px' }} />{form.readTime}</span>}
+                {form.author && <span><i className="fa fa-user" style={{ marginRight: '5px' }} />By {form.author}</span>}
+              </div>
+            </div>
+            
+            {form.coverImage && (
+              <img src={form.coverImage} alt="Cover Preview" style={{ width: '100%', borderRadius: '12px', marginBottom: '2.5em', objectFit: 'cover', maxHeight: '380px' }} />
+            )}
+            
+            <div className="post-content">
+              {renderContent(form.content)}
+            </div>
+          </article>
+        </div>
+      )}
     </div>
   );
 }

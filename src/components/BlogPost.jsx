@@ -291,7 +291,7 @@ export default function BlogPost() {
  * Handles: ## headings, ``` code blocks, **bold**, bullet lists, paragraphs.
  * Automatically detects and elevates shell commands and server configurations to interactive code blocks.
  */
-function renderContent(content) {
+export function renderContent(content) {
   if (!content) return null;
 
   const blocks = content.split('\n\n');
@@ -361,10 +361,11 @@ function renderContent(content) {
     const lines = block.split('\n');
     const hasAnyCode = lines.some(line => {
       const COMMAND_WORDS = [
-        'sudo', 'npm', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
+        'sudo', 'npm', 'npx', 'yarn', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
         'zip', 'unzip', 'scp', 'ssh', 'cd', 'ls', 'cat', 'git', 
         'echo', 'curl', 'wget', 'chmod', 'chown', 'mkdir', 'rm', 
-        'mv', 'cp', 'tar', 'pwd', 'make', 'grep', 'vi'
+        'mv', 'cp', 'tar', 'pwd', 'make', 'grep', 'vi', 
+        'apt', 'yum', 'pip', 'python', 'python3', 'aws', 'systemctl', 'service'
       ];
       const trimmedLine = line.trim();
       if (!trimmedLine) return false;
@@ -400,12 +401,13 @@ function renderContent(content) {
 }
 
 /** Helper function to parse plain text lines looking for shell command code blocks */
-function parseLineWithCode(line) {
+export function parseLineWithCode(line) {
   const COMMAND_WORDS = [
-    'sudo', 'npm', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
+    'sudo', 'npm', 'npx', 'yarn', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
     'zip', 'unzip', 'scp', 'ssh', 'cd', 'ls', 'cat', 'git', 
     'echo', 'curl', 'wget', 'chmod', 'chown', 'mkdir', 'rm', 
-    'mv', 'cp', 'tar', 'pwd', 'make', 'grep', 'vi'
+    'mv', 'cp', 'tar', 'pwd', 'make', 'grep', 'vi', 
+    'apt', 'yum', 'pip', 'python', 'python3', 'aws', 'systemctl', 'service'
   ];
 
   const trimmedLine = line.trim();
@@ -455,7 +457,7 @@ function parseLineWithCode(line) {
 }
 
 /** Handles **bold** and `inline code` inside a text string */
-function inlineFormat(text) {
+export function inlineFormat(text) {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
@@ -473,7 +475,7 @@ function inlineFormat(text) {
 }
 
 /** InteractiveCodeBlock component for rich code displays, copy features, and playground linking */
-function InteractiveCodeBlock({ code, lang }) {
+export function InteractiveCodeBlock({ code, lang }) {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
