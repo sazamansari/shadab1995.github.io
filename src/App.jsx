@@ -14,6 +14,7 @@ import Contact        from './components/Contact';
 import Blog           from './components/Blog';
 import BlogPost       from './components/BlogPost';
 import AdminBlog      from './components/AdminBlog';
+import CodePlayground from './components/CodePlayground';
 import Footer         from './components/Footer';
 
 import { useCanvasAnimation } from './useCanvasAnimation';
@@ -80,6 +81,7 @@ const CertificationsPage = () => <PageShell><Certifications /></PageShell>;
 const ContactPage        = () => <PageShell><Contact /></PageShell>;
 const BlogPage           = () => <PageShell><Blog /></PageShell>;
 const BlogPostPage       = () => <PageShell><BlogPost /></PageShell>;
+const PlaygroundPage     = () => <PageShell><CodePlayground /></PageShell>;
 const AdminPage          = () => <AdminShell />;
 
 /* ─── SEO Manager to dynamically update document title & meta tags ─── */
@@ -116,6 +118,10 @@ function SEOManager() {
       case '/blog':
         title = "Blog & Insights | Md Shadab Azam Ansari";
         description = "Technical blog and insights on DevOps, Cloud Computing, Full Stack Development, and software engineering practices.";
+        break;
+      case '/playground':
+        title = "Interactive Code Playground & IDE | Md Shadab Azam Ansari";
+        description = "A client-side interactive code playground and sandbox to run, test, and preview JavaScript, Python, and HTML/CSS/JS frontend projects live.";
         break;
       case '/admin':
         title = "Admin Panel | Md Shadab Azam Ansari";
@@ -182,6 +188,7 @@ export default function App() {
         <Route path="/contact"         element={<ContactPage />} />
         <Route path="/blog"            element={<BlogPage />} />
         <Route path="/blog/:id"        element={<BlogPostPage />} />
+        <Route path="/playground"      element={<PlaygroundPage />} />
         <Route path="/admin"           element={<AdminPage />} />
         {/* Fallback – redirect unknown paths to About */}
         <Route path="*"               element={<AboutPage />} />

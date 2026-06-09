@@ -289,6 +289,7 @@ export default function BlogPost() {
 /**
  * Renders plain-text blog content with basic markdown-like formatting.
  * Handles: ## headings, ``` code blocks, **bold**, bullet lists, paragraphs.
+ * Automatically detects and elevates shell commands and server configurations to interactive code blocks.
  */
 function renderContent(content) {
   if (!content) return null;
@@ -302,24 +303,7 @@ function renderContent(content) {
       const lines = trimmed.split('\n');
       const lang  = lines[0].replace('```', '').trim();
       const code  = lines.slice(1, lines[lines.length - 1] === '```' ? lines.length - 1 : lines.length).join('\n');
-      return (
-        <pre
-          key={i}
-          style={{
-            background: '#f4f4f4',
-            borderLeft: '4px solid #2c98f0',
-            padding: '1em 1.2em',
-            borderRadius: '4px',
-            overflowX: 'auto',
-            fontFamily: 'monospace',
-            fontSize: '14px',
-            lineHeight: 1.6,
-            margin: '1.5em 0',
-          }}
-        >
-          <code>{code}</code>
-        </pre>
-      );
+      return <InteractiveCodeBlock key={i} code={code} lang={lang} />;
     }
 
     // H2 heading
@@ -362,9 +346,112 @@ function renderContent(content) {
       );
     }
 
+    // Smart Nginx Configuration Block Detection
+    const isNginxConfig = trimmed.includes('server {') || trimmed.includes('location /') || (trimmed.includes('listen ') && trimmed.includes(';')) || (trimmed.includes('server_name ') && trimmed.includes(';'));
+    if (isNginxConfig) {
+      return <InteractiveCodeBlock key={i} code={trimmed} lang="nginx" />;
+    }
+
+    // Smart JSON Block Detection
+    if (trimmed.startsWith('{') && trimmed.endsWith('}') && (trimmed.includes('":') || trimmed.includes("':"))) {
+      return <InteractiveCodeBlock key={i} code={trimmed} lang="json" />;
+    }
+
+    // Smart Bash Command Detection
+    const lines = block.split('\n');
+    const hasAnyCode = lines.some(line => {
+      const COMMAND_WORDS = [
+        'sudo', 'npm', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
+        'zip', 'unzip', 'scp', 'ssh', 'cd', 'ls', 'cat', 'git', 
+        'echo', 'curl', 'wget', 'chmod', 'chown', 'mkdir', 'rm', 
+        'mv', 'cp', 'tar', 'pwd', 'make', 'grep', 'vi'
+      ];
+      const trimmedLine = line.trim();
+      if (!trimmedLine) return false;
+      if (line.toLowerCase().includes('sudo ')) return true;
+      const firstWord = trimmedLine.split(/\s+/)[0].toLowerCase();
+      return COMMAND_WORDS.includes(firstWord);
+    });
+
+    if (hasAnyCode) {
+      return (
+        <div key={i} style={{ margin: '1.2em 0' }}>
+          {lines.map((line, lineIdx) => {
+            const parsed = parseLineWithCode(line);
+            if (parsed.isCode) {
+              return (
+                <React.Fragment key={lineIdx}>
+                  {parsed.prefix && <p style={{ margin: '0.5em 0' }}>{inlineFormat(parsed.prefix)}</p>}
+                  <InteractiveCodeBlock code={parsed.code} lang="bash" />
+                  {parsed.suffix && <p style={{ margin: '0.5em 0' }}>{inlineFormat(parsed.suffix)}</p>}
+                </React.Fragment>
+              );
+            } else {
+              return line.trim() ? <p key={lineIdx} style={{ margin: '0.5em 0' }}>{inlineFormat(line)}</p> : null;
+            }
+          })}
+        </div>
+      );
+    }
+
     // Default paragraph
     return <p key={i}>{inlineFormat(trimmed)}</p>;
   });
+}
+
+/** Helper function to parse plain text lines looking for shell command code blocks */
+function parseLineWithCode(line) {
+  const COMMAND_WORDS = [
+    'sudo', 'npm', 'docker', 'kubectl', 'pm2', 'tofu', 'helm', 
+    'zip', 'unzip', 'scp', 'ssh', 'cd', 'ls', 'cat', 'git', 
+    'echo', 'curl', 'wget', 'chmod', 'chown', 'mkdir', 'rm', 
+    'mv', 'cp', 'tar', 'pwd', 'make', 'grep', 'vi'
+  ];
+
+  const trimmedLine = line.trim();
+  let codeStartIdx = -1;
+  let matchingWord = '';
+
+  if (line.toLowerCase().includes('sudo ')) {
+    codeStartIdx = line.toLowerCase().indexOf('sudo ');
+    matchingWord = 'sudo';
+  } else {
+    const firstWord = trimmedLine.split(/\s+/)[0].toLowerCase();
+    if (COMMAND_WORDS.includes(firstWord)) {
+      codeStartIdx = line.indexOf(trimmedLine.split(/\s+/)[0]);
+      matchingWord = firstWord;
+    }
+  }
+
+  if (codeStartIdx !== -1) {
+    const prefixText = line.substring(0, codeStartIdx).trim();
+    const rest = line.substring(codeStartIdx);
+    
+    // Separation keywords for next text step description
+    const separatorRegex = /\b(Step \d+|[1-9]\d*\.\s+|Add the following|Ensure proper|Create the required|Create a production|Install Nginx|Start the nginx)\b/i;
+    const match = rest.substring(matchingWord.length).match(separatorRegex);
+    
+    if (match) {
+      const matchIdx = matchingWord.length + match.index;
+      const codePart = rest.substring(0, matchIdx).trim();
+      const suffixText = rest.substring(matchIdx).trim();
+      return {
+        isCode: true,
+        prefix: prefixText,
+        code: codePart,
+        suffix: suffixText
+      };
+    } else {
+      return {
+        isCode: true,
+        prefix: prefixText,
+        code: rest.trim(),
+        suffix: ''
+      };
+    }
+  }
+
+  return { isCode: false, text: line };
 }
 
 /** Handles **bold** and `inline code` inside a text string */
@@ -384,3 +471,52 @@ function inlineFormat(text) {
     return part;
   });
 }
+
+/** InteractiveCodeBlock component for rich code displays, copy features, and playground linking */
+function InteractiveCodeBlock({ code, lang }) {
+  const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleRun = () => {
+    navigate('/playground', { state: { code, language: lang } });
+  };
+
+  const cleanLang = lang ? lang.toLowerCase().trim() : 'code';
+  const displayLang = lang ? lang.trim() : 'CODE';
+
+  return (
+    <div className="interactive-code-container">
+      <div className="interactive-code-header">
+        <span className={`interactive-code-lang ${cleanLang}`}>{displayLang}</span>
+        <div className="interactive-code-actions">
+          <button className="interactive-code-btn" onClick={handleCopy} title="Copy code">
+            {copied ? (
+              <>
+                <i className="fa fa-check" style={{ color: 'var(--teal)' }} /> Copied!
+              </>
+            ) : (
+              <>
+                <i className="fa fa-copy" /> Copy
+              </>
+            )}
+          </button>
+          {['javascript', 'js', 'html', 'css', 'python', 'py'].includes(cleanLang) && (
+            <button className="interactive-code-btn btn-run" onClick={handleRun} title="Run in Sandbox">
+              <i className="fa fa-play" /> Run
+            </button>
+          )}
+        </div>
+      </div>
+      <pre>
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+

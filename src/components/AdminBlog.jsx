@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '../appwrite';
 
@@ -228,6 +228,38 @@ function PostEditor({ post, onSave, onCancel }) {
   const [error, setError]   = useState('');
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  
+  const textareaRef = useRef(null);
+
+  const insertTextAtCursor = (textBefore, textAfter = '') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const value = textarea.value;
+
+    const selection = value.substring(start, end);
+    const replacement = textBefore + selection + textAfter;
+    const newValue = value.substring(0, start) + replacement + value.substring(end);
+    
+    set('content', newValue);
+
+    // Focus back and position cursor appropriately
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = start + textBefore.length + selection.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 50);
+  };
+
+  const insertCodeBlock = (lang) => {
+    insertTextAtCursor(`\n\`\`\`${lang}\n`, `\n\`\`\`\n`);
+  };
+
+  const wrapSelectionWithBackticks = () => {
+    insertTextAtCursor('\`\`\`bash\n', '\n\`\`\`');
+  };
 
   const handleSave = async () => {
     if (!form.title.trim()) { setError('Title is required.'); return; }
@@ -298,7 +330,35 @@ function PostEditor({ post, onSave, onCancel }) {
         </div>
         <div className="admin-form-row">
           <label className="admin-label">Content (Markdown) *</label>
-          <textarea className="admin-input admin-textarea admin-textarea--tall" rows={18} value={form.content} onChange={(e) => set('content', e.target.value)} placeholder="Write your post in Markdown…" id="post-content-textarea" />
+          
+          {/* Format Toolbar */}
+          <div className="admin-editor-toolbar">
+            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('bash')} title="Insert Bash Code">
+              <i className="fa fa-terminal" /> + Bash Code
+            </button>
+            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('javascript')} title="Insert JS Code">
+              <i className="fa fa-code" /> + JavaScript
+            </button>
+            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('html')} title="Insert HTML Sandbox">
+              <i className="fa fa-eye" /> + HTML Sandbox
+            </button>
+            <button type="button" className="admin-toolbar-btn" onClick={() => insertCodeBlock('nginx')} title="Insert Nginx Code">
+              <i className="fa fa-server" /> + Nginx Config
+            </button>
+            <button type="button" className="admin-toolbar-btn" onClick={wrapSelectionWithBackticks} title="Wrap highlighted text in code block">
+              <i className="fa fa-quote-left" /> Wrap Highlighted Text
+            </button>
+          </div>
+
+          <textarea
+            ref={textareaRef}
+            className="admin-input admin-textarea admin-textarea--tall"
+            rows={18}
+            value={form.content}
+            onChange={(e) => set('content', e.target.value)}
+            placeholder="Write your post in Markdown..."
+            id="post-content-textarea"
+          />
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { path: '/certifications', label: 'Certifications' },
   { path: '/contact',        label: 'Contact' },
   { path: '/blog',           label: 'Blog' },
+  { path: '/playground',     label: 'Code Playground' },
 ];
 
 export default function Sidebar({ menuOpen, toggleMenu }) {
