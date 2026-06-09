@@ -188,7 +188,7 @@ export default function Blog() {
               <div className="row row-bottom-padded-sm">
                 <div className="col-md-12">
                   <div className="about-desc">
-                    <h2>Blog</h2>
+                    <h1>Cloud, DevOps &amp; Software Engineering Blog</h1>
                     <p>Insights on Cloud, DevOps, and Full Stack engineering — from production experience.</p>
                   </div>
                 </div>

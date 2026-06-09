@@ -462,7 +462,7 @@ export default function CodePlayground() {
     try {
       
       const base64Code = btoa(unescape(encodeURIComponent(code)));
-      const shareUrl = `${window.location.origin}${window.location.pathname}#/playground?code=${base64Code}&lang=${language}`;
+      const shareUrl = `${window.location.origin}/playground?code=${base64Code}&lang=${language}`;
       
       navigator.clipboard.writeText(shareUrl);
       setToastMessage('Playground URL copied to clipboard!');
@@ -489,7 +489,7 @@ export default function CodePlayground() {
       <AnimateBox effect="fadeInLeft">
         <div className="playground-header-wrap">
           <div className="playground-title-desc">
-            <h2>Developer Playground & Sandbox</h2>
+            <h1>Online Developer Playground &amp; Code Sandbox</h1>
             <p>Write custom scripts, design responsive markup, or experiment with code logic right in your browser.</p>
           </div>
 

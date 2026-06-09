@@ -73,7 +73,7 @@ export default function Skills() {
               <div className="row row-bottom-padded-sm">
                 <div className="col-md-12">
                   <div className="about-desc">
-                    <h2>My Skills</h2>
+                    <h1>Cloud, DevOps &amp; Full Stack Skills</h1>
                   </div>
                 </div>
               </div>

@@ -12,7 +12,7 @@ export default function Contact() {
               <div className="row row-bottom-padded-sm">
                 <div className="col-md-12">
                   <div className="about-desc">
-                    <h2>Get In Touch</h2>
+                    <h1>Contact Md Shadab Azam Ansari</h1>
                     <p>
                       I'm always open to discussing new projects, creative ideas, or opportunities to
                       be part of your vision. Feel free to reach out!

@@ -59,10 +59,11 @@ export default function BlogPost() {
       element.setAttribute('content', content);
     };
 
-    const fullUrl = `${window.location.origin}${window.location.pathname}#/blog/${post.$id || id}`;
+    const fullUrl = `https://md-shadab-azam-ansari.vercel.app/blog/${post.$id || id}`;
 
     setMetaTag('name', 'description', description);
     setMetaTag('property', 'og:title', title);
+    setMetaTag('property', 'og:type', 'article');
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:url', fullUrl);
     if (post.coverImage) {
@@ -72,11 +73,47 @@ export default function BlogPost() {
 
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
+    setMetaTag('property', 'article:published_time', post.date || '');
+    setMetaTag('property', 'article:author', post.author || 'Md Shadab Azam Ansari');
+    setMetaTag('property', 'article:section', post.category || 'Technology');
 
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
       canonicalLink.setAttribute('href', fullUrl);
     }
+
+    let articleSchema = document.getElementById('article-structured-data');
+    if (!articleSchema) {
+      articleSchema = document.createElement('script');
+      articleSchema.id = 'article-structured-data';
+      articleSchema.type = 'application/ld+json';
+      document.head.appendChild(articleSchema);
+    }
+    articleSchema.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description,
+      image: post.coverImage ? [post.coverImage] : ['https://md-shadab-azam-ansari.vercel.app/profile.jpeg'],
+      datePublished: post.date,
+      dateModified: post.$updatedAt || post.date,
+      mainEntityOfPage: fullUrl,
+      articleSection: post.category,
+      author: {
+        '@type': 'Person',
+        name: post.author || 'Md Shadab Azam Ansari',
+        url: 'https://md-shadab-azam-ansari.vercel.app/',
+      },
+      publisher: {
+        '@type': 'Person',
+        name: 'Md Shadab Azam Ansari',
+        url: 'https://md-shadab-azam-ansari.vercel.app/',
+      },
+    });
+
+    return () => {
+      document.getElementById('article-structured-data')?.remove();
+    };
   }, [post, id]);
 
   
@@ -154,7 +191,7 @@ export default function BlogPost() {
       </div>
 
       <div className="colorlib-narrow-content">
-        <button className="btn-back" onClick={() => navigate('/#blog')} id="blog-back-btn">
+        <button className="btn-back" onClick={() => navigate('/blog')} id="blog-back-btn">
           <i className="fa fa-arrow-left" /> Back to Blog
         </button>
 

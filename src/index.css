@@ -397,7 +397,8 @@ body.offcanvas .colorlib-nav-toggle {
 }
 
 
-.about-desc h1 {
+.about-desc h1,
+.playground-title-desc h1 {
   font-size: 38px;
   font-weight: 400;
   font-family: "Montserrat", Georgia, serif;
@@ -3894,6 +3895,5 @@ a.cert-card:hover {
   text-align: center;
   margin-top: 18px;
 }
-
 
 

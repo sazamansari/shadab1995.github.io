@@ -114,7 +114,7 @@ export default function Certifications() {
               <div className="row row-bottom-padded-sm">
                 <div className="col-md-12">
                   <div className="about-desc">
-                    <h2>Certifications</h2>
+                    <h1>Cloud &amp; DevOps Certifications</h1>
                     <p>
                       Industry-recognised cloud and DevOps certifications across AWS, Azure,
                       GitLab, GitHub, and Aviatrix platforms.

@@ -29,11 +29,11 @@ export default function Sidebar({ menuOpen, toggleMenu }) {
           style={{ backgroundImage: 'url(/profile.jpeg)' }}
           aria-label="Profile photo of Md Shadab Azam Ansari"
         />
-        <h1 id="colorlib-logo">
+        <div id="colorlib-logo">
           <a href="/" onClick={handleLogoClick}>
             Md Shadab Azam Ansari
           </a>
-        </h1>
+        </div>
       </div>
 
       <nav id="colorlib-main-menu" role="navigation" className="navbar">
