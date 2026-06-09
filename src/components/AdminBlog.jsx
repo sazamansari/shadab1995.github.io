@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '../appwrite';
+import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost, uploadBlogImage } from '../appwrite';
 import { renderContent } from './BlogPost';
 
 
@@ -246,11 +246,14 @@ function PostEditor({ post, onSave, onCancel }) {
   const [error, setError]   = useState('');
   const [editorTab, setEditorTab] = useState('split');
   const [draftStatus, setDraftStatus] = useState('Draft ready');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   
   const textareaRef = useRef(null);
   const lineNumbersRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   useEffect(() => {
     setDraftStatus('Saving draft...');
@@ -289,6 +292,21 @@ function PostEditor({ post, onSave, onCancel }) {
 
   const wrapSelectionWithBackticks = () => {
     insertTextAtCursor('\`\`\`bash\n', '\n\`\`\`');
+  };
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+    setUploadingImage(true);
+    setError('');
+    try {
+      const imageUrl = await uploadBlogImage(file);
+      set('coverImage', imageUrl);
+    } catch (e) {
+      setError('Image upload failed: ' + e.message);
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
   };
 
   const handleSave = useCallback(async () => {
@@ -425,7 +443,47 @@ function PostEditor({ post, onSave, onCancel }) {
             </div>
           </div>
           <div className="admin-form-row">
-            <label className="admin-label">Cover Image URL</label>
+            <label className="admin-label">Cover Image</label>
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={(e) => handleImageUpload(e.target.files?.[0])}
+              className="admin-image-file-input"
+              id="post-cover-upload"
+            />
+            <div
+              className={`admin-image-upload${isDraggingImage ? ' is-dragging' : ''}${uploadingImage ? ' is-uploading' : ''}`}
+              onDragEnter={(e) => { e.preventDefault(); setIsDraggingImage(true); }}
+              onDragOver={(e) => e.preventDefault()}
+              onDragLeave={(e) => { e.preventDefault(); setIsDraggingImage(false); }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDraggingImage(false);
+                handleImageUpload(e.dataTransfer.files?.[0]);
+              }}
+            >
+              {form.coverImage ? (
+                <div className="admin-image-preview">
+                  <img src={form.coverImage} alt="Selected blog cover" />
+                  <div className="admin-image-preview-actions">
+                    <button type="button" className="admin-btn-secondary" onClick={() => imageInputRef.current?.click()} disabled={uploadingImage}>
+                      <i className="fa fa-refresh" /> Replace
+                    </button>
+                    <button type="button" className="admin-btn-logout" onClick={() => set('coverImage', '')} disabled={uploadingImage}>
+                      <i className="fa fa-trash" /> Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button type="button" className="admin-image-upload-button" onClick={() => imageInputRef.current?.click()} disabled={uploadingImage}>
+                  <i className={`fa fa-${uploadingImage ? 'spinner fa-spin' : 'cloud-upload'}`} />
+                  <strong>{uploadingImage ? 'Uploading image...' : 'Upload cover image'}</strong>
+                  <span>Drop PNG, JPG, WEBP, or GIF here, or click to select. Maximum 10 MB.</span>
+                </button>
+              )}
+            </div>
+            <label className="admin-label admin-image-url-label">Or use an image URL</label>
             <input className="admin-input" value={form.coverImage} onChange={(e) => set('coverImage', e.target.value)} placeholder="https://…" />
             <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#777', display: 'flex', alignItems: 'center' }}>Quick Presets:</span>

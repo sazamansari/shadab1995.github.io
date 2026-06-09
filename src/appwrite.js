@@ -2,26 +2,29 @@
 // Uses environment variables from .env file
 // Falls back to localStorage if Appwrite is not configured
 
-import { Client, Databases, Query, ID } from 'appwrite';
+import { Client, Databases, Storage, Query, ID } from 'appwrite';
 import { MOCK_POSTS } from './mockPosts';
 
 const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT || '';
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID || '';
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID || '';
 const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID || '';
+const STORAGE_BUCKET_ID = import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID || '';
 
 const isConfigured = ENDPOINT && PROJECT_ID && DATABASE_ID && COLLECTION_ID
   && PROJECT_ID !== 'your_project_id';
 
-let client, databases;
+let client, databases, storage;
 
 if (isConfigured) {
   client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
   databases = new Databases(client);
+  storage = new Storage(client);
 }
 
 export { MOCK_POSTS };
 export const isMockMode = !isConfigured;
+export const isImageUploadConfigured = Boolean(isConfigured && STORAGE_BUCKET_ID);
 
 const LOCAL_STORAGE_KEY = 'portfolio_blog_posts';
 
@@ -147,4 +150,36 @@ export async function deleteBlogPost(id) {
 
   await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
   return { success: true, isMock: false };
+}
+
+/**
+ * Uploads a blog cover image to Appwrite Storage.
+ * In local/mock mode, returns a data URL so uploads still work without a backend.
+ */
+export async function uploadBlogImage(file) {
+  if (!(file instanceof File) || !file.type.startsWith('image/')) {
+    throw new Error('Please select a valid image file.');
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error('Image must be smaller than 10 MB.');
+  }
+
+  if (!isConfigured) {
+    return readFileAsDataUrl(file);
+  }
+  if (!STORAGE_BUCKET_ID) {
+    throw new Error('Image upload is not configured. Add VITE_APPWRITE_STORAGE_BUCKET_ID.');
+  }
+
+  const uploaded = await storage.createFile(STORAGE_BUCKET_ID, ID.unique(), file);
+  return storage.getFileView(STORAGE_BUCKET_ID, uploaded.$id).toString();
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Could not read the selected image.'));
+    reader.readAsDataURL(file);
+  });
 }
