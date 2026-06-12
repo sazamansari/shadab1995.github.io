@@ -96,118 +96,59 @@ function LegacyHashRedirect() {
   return null;
 }
 
+import SEO from './components/SEO';
+
 function SEOManager() {
   const location = useLocation();
+  const path = location.pathname;
+  const siteUrl = 'https://md-shadab-azam-ansari.vercel.app';
+  
+  const defaultSeo = {
+    title: 'Md Shadab Azam Ansari | Cloud & DevOps Engineer',
+    description: 'Portfolio of Md Shadab Azam Ansari, a Cloud & DevOps Engineer specializing in AWS, Kubernetes, Docker, Terraform, CI/CD, Node.js, and React.',
+  };
+  
+  const pages = {
+    '/': defaultSeo,
+    '/skills': {
+      title: 'Cloud, DevOps & Full Stack Skills | Md Shadab Azam Ansari',
+      description: 'Explore hands-on expertise in AWS, Kubernetes, Docker, Terraform, Jenkins, GitHub Actions, React, Node.js, Express, and MongoDB.',
+    },
+    '/experience': {
+      title: 'Cloud & DevOps Engineering Experience | Md Shadab Azam Ansari',
+      description: 'Professional experience delivering cloud infrastructure, CI/CD automation, scalable APIs, Kubernetes deployments, and production reliability.',
+    },
+    '/certifications': {
+      title: 'AWS, Azure & DevOps Certifications | Md Shadab Azam Ansari',
+      description: 'View verified cloud and DevOps certifications including AWS Solutions Architect, AWS DevOps Professional, and Microsoft DevOps Engineer Expert.',
+    },
+    '/contact': {
+      title: 'Contact Md Shadab Azam Ansari | Cloud & DevOps Engineer',
+      description: 'Contact Md Shadab Azam Ansari for Cloud, DevOps, AWS, Kubernetes, CI/CD, full stack engineering, and technical collaboration opportunities.',
+    },
+    '/blog': {
+      title: 'Cloud, DevOps, AWS & Kubernetes Blog | Md Shadab Azam Ansari',
+      description: 'Practical engineering articles about AWS, Kubernetes, Docker, Terraform, CI/CD, cloud architecture, React, Node.js, and production DevOps.',
+    },
+    '/playground': {
+      title: 'Online JavaScript, HTML & Python Code Playground',
+      description: 'Run and preview JavaScript, HTML, CSS, and simulated Python examples in an interactive browser-based coding playground.',
+    },
+    '/admin': {
+      title: 'Admin Panel',
+      description: 'Private website administration page.',
+    },
+  };
 
-  useEffect(() => {
-    const path = location.pathname;
-    const siteUrl = 'https://md-shadab-azam-ansari.vercel.app';
-    const defaultSeo = {
-      title: 'Md Shadab Azam Ansari | Cloud & DevOps Engineer',
-      description: 'Portfolio of Md Shadab Azam Ansari, a Cloud & DevOps Engineer specializing in AWS, Kubernetes, Docker, Terraform, CI/CD, Node.js, and React.',
-    };
-    const pages = {
-      '/': defaultSeo,
-      '/skills': {
-        title: 'Cloud, DevOps & Full Stack Skills | Md Shadab Azam Ansari',
-        description: 'Explore hands-on expertise in AWS, Kubernetes, Docker, Terraform, Jenkins, GitHub Actions, React, Node.js, Express, and MongoDB.',
-      },
-      '/experience': {
-        title: 'Cloud & DevOps Engineering Experience | Md Shadab Azam Ansari',
-        description: 'Professional experience delivering cloud infrastructure, CI/CD automation, scalable APIs, Kubernetes deployments, and production reliability.',
-      },
-      '/certifications': {
-        title: 'AWS, Azure & DevOps Certifications | Md Shadab Azam Ansari',
-        description: 'View verified cloud and DevOps certifications including AWS Solutions Architect, AWS DevOps Professional, and Microsoft DevOps Engineer Expert.',
-      },
-      '/contact': {
-        title: 'Contact Md Shadab Azam Ansari | Cloud & DevOps Engineer',
-        description: 'Contact Md Shadab Azam Ansari for Cloud, DevOps, AWS, Kubernetes, CI/CD, full stack engineering, and technical collaboration opportunities.',
-      },
-      '/blog': {
-        title: 'Cloud, DevOps, AWS & Kubernetes Blog | Md Shadab Azam Ansari',
-        description: 'Practical engineering articles about AWS, Kubernetes, Docker, Terraform, CI/CD, cloud architecture, React, Node.js, and production DevOps.',
-      },
-      '/playground': {
-        title: 'Online JavaScript, HTML & Python Code Playground',
-        description: 'Run and preview JavaScript, HTML, CSS, and simulated Python examples in an interactive browser-based coding playground.',
-      },
-      '/admin': {
-        title: 'Admin Panel',
-        description: 'Private website administration page.',
-        noindex: true,
-      },
-    };
-    const seo = pages[path] || (path.startsWith('/blog/') ? {
-      title: 'Cloud & DevOps Technical Article | Md Shadab Azam Ansari',
-      description: 'Read a practical Cloud and DevOps engineering article by Md Shadab Azam Ansari.',
-    } : defaultSeo);
-    const { title, description } = seo;
-    const fullUrl = `${siteUrl}${path === '/' ? '/' : path}`;
+  const seo = pages[path] || (path.startsWith('/blog/') ? null : defaultSeo);
+  
+  if (!seo) return null; // Blog posts handle their own SEO
 
-    
-    document.title = title;
+  const fullUrl = `${siteUrl}${path === '/' ? '/' : path}`;
 
-    
-    const setMetaTag = (attrName, attrValue, content) => {
-      let element = document.querySelector(`meta[${attrName}="${attrValue}"]`);
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(attrName, attrValue);
-        document.head.appendChild(element);
-      }
-      element.setAttribute('content', content);
-    };
-
-    
-    setMetaTag('name', 'description', description);
-    setMetaTag('name', 'robots', seo.noindex
-      ? 'noindex, nofollow'
-      : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    setMetaTag('property', 'og:title', title);
-    setMetaTag('property', 'og:type', 'website');
-    setMetaTag('property', 'og:description', description);
-    setMetaTag('property', 'og:url', fullUrl);
-    setMetaTag('property', 'og:image', 'https://md-shadab-azam-ansari.vercel.app/profile.jpeg');
-
-    setMetaTag('name', 'twitter:title', title);
-    setMetaTag('name', 'twitter:description', description);
-    setMetaTag('name', 'twitter:image', 'https://md-shadab-azam-ansari.vercel.app/profile.jpeg');
-
-    
-    let canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (!canonicalLink) {
-      canonicalLink = document.createElement('link');
-      canonicalLink.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonicalLink);
-    }
-    canonicalLink.setAttribute('href', fullUrl);
-
-    const breadcrumb = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
-        ...(path !== '/' ? [{
-          '@type': 'ListItem',
-          position: 2,
-          name: title.split('|')[0].trim(),
-          item: fullUrl,
-        }] : []),
-      ],
-    };
-    let structuredData = document.getElementById('route-structured-data');
-    if (!structuredData) {
-      structuredData = document.createElement('script');
-      structuredData.id = 'route-structured-data';
-      structuredData.type = 'application/ld+json';
-      document.head.appendChild(structuredData);
-    }
-    structuredData.textContent = JSON.stringify(breadcrumb);
-  }, [location]);
-
-  return null;
+  return <SEO title={seo.title} description={seo.description} url={fullUrl} />;
 }
+
 
 
 export default function App() {

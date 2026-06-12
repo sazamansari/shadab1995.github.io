@@ -1,4 +1,4 @@
-// 52 premium technical blog posts covering Full Stack, DevOps, Docker, Kubernetes, CI/CD, AWS
+// Premium technical blog posts covering DevOps, Docker, Kubernetes, CI/CD, AWS
 export const MOCK_POSTS = [
   {
     $id: 'post-1',
@@ -82,39 +82,6 @@ Using \`pm2 reload\` instead of \`pm2 restart\` ensures connections drain gracef
     readTime: '8 min read',
   },
   {
-    $id: 'post-3',
-    title: 'React Performance Optimisation: 10 Patterns I Use in Production',
-    excerpt: 'From code-splitting to virtualised lists — practical patterns to make your React apps blazing fast.',
-    content: `## Why Performance Matters
-
-A 1-second delay in page load can reduce conversions by 7%. Here are the patterns I apply to every production React app.
-
-## 1. Code Splitting with React.lazy
-
-\`\`\`jsx
-const BlogPage = React.lazy(() => import('./pages/BlogPage'));
-\`\`\`
-
-## 2. Memoisation
-
-Use \`React.memo\`, \`useMemo\`, and \`useCallback\` judiciously — not everywhere, only when profiler shows re-renders.
-
-## 3. Virtualised Lists
-
-For lists >100 items, use \`react-window\` or \`react-virtual\` to only render visible rows.
-
-## 4. Image Optimisation
-
-- Use WebP format
-- Add \`loading="lazy"\` attribute
-- Set explicit width/height to avoid CLS`,
-    coverImage: 'https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=600&q=80',
-    date: '2026-04-28',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '10 min read',
-  },
-  {
     $id: 'post-4',
     title: 'Docker + Kubernetes: Deploying a MERN App at Scale',
     excerpt: 'A complete walkthrough of containerising a MERN stack app with Docker and orchestrating it on Kubernetes.',
@@ -188,32 +155,6 @@ Cold starts are the #1 complaint with Lambda. Solutions:
     author: 'Md Shadab Azam Ansari',
     category: 'AWS',
     readTime: '9 min read',
-  },
-  {
-    $id: 'post-6',
-    title: 'Mentoring 1000+ Students: Lessons from Teaching Cloud & DevOps',
-    excerpt: 'What I learned from mentoring over a thousand students in Full Stack, AWS, and DevOps through multiple ed-tech platforms.',
-    content: `## What Works in Technical Education
-
-### 1. Project-First Learning
-Students retain 80% more when they build real projects vs. following passive tutorials.
-
-### 2. Immediate Feedback Loops
-Weekly code reviews and 1:1 sessions dramatically improve learning speed.
-
-### 3. Community Building
-Peer learning through cohort groups reduces dropout rates significantly.
-
-## Common Student Mistakes
-
-- Tutorial hell — watching without building
-- Skipping fundamentals (HTTP, OS, networking)
-- Not deploying — everything must go to production`,
-    coverImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80',
-    date: '2026-03-15',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Career',
-    readTime: '7 min read',
   },
   {
     $id: 'post-7',
@@ -607,61 +548,6 @@ build_job:
     readTime: '8 min read',
   },
   {
-    $id: 'post-19',
-    title: 'React Server Components (RSC): Core Concepts Explained',
-    excerpt: 'What are Server Components, how do they differ from SSR, and how they change bundle size profiles.',
-    content: `## Introduction
-
-React Server Components (RSC) represent a massive shift in how web apps are built. By executing components on the server, we send zero Javascript to the browser for static sections.
-
-## Server vs. Client Components
-
-- **Server Components**: Run on the server, can query databases directly, and are zero-bundle size.
-- **Client Components**: Declared with \`"use client"\`. Have access to state, hooks, and browser APIs.
-
-## Benefits
-
-- Smaller bundle sizes.
-- Faster Page Loads.
-- Native backend capabilities inside UI code blocks.`,
-    coverImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80',
-    date: '2025-09-02',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '7 min read',
-  },
-  {
-    $id: 'post-20',
-    title: 'Building Microservices with NestJS and RabbitMQ',
-    excerpt: 'Implementing event-driven architecture using NestJS microservice controllers and message brokers.',
-    content: `## Why Event-Driven?
-
-Monoliths fail in scaling and isolation. Using microservices communicating via message brokers ensures if one module is down, the rest can continue working.
-
-## NestJS Controller
-
-\`\`\`typescript
-@Controller()
-export class OrdersController {
-  @MessagePattern('order_created')
-  handleOrderCreated(@Payload() data: any) {
-    console.log('Order received:', data);
-  }
-}
-\`\`\`
-
-## Publisher Code
-
-\`\`\`typescript
-this.client.emit('order_created', { orderId: '123', price: 99.99 });
-\`\`\``,
-    coverImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80',
-    date: '2025-08-15',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '10 min read',
-  },
-  {
     $id: 'post-21',
     title: 'Jenkins Declarative vs. Scripted Pipeline: Comparison',
     excerpt: 'Detailed breakdown of Groovy scripting styles in Jenkins and when to use declarative syntax.',
@@ -727,32 +613,6 @@ metadata:
     author: 'Md Shadab Azam Ansari',
     category: 'Kubernetes',
     readTime: '11 min read',
-  },
-  {
-    $id: 'post-23',
-    title: 'Optimising Node.js API Performance under Heavy Load',
-    excerpt: 'Applying profiling, cluster modules, fastify framework, and caching to support 10k requests per second.',
-    content: `## The Single-Threaded Bottleneck
-
-Node.js is extremely fast at I/O but can block the main thread during heavy calculations. Scaling Node APIs requires deliberate design architectures.
-
-## Core Optimization Steps
-
-1. **Use Clustering**: Utilize all CPU cores with the native \`cluster\` module or PM2.
-2. **Switch to Fastify**: Fastify is up to 2x faster than Express.
-3. **Add Redis Caching**: Cache common requests directly in RAM.
-
-\`\`\`javascript
-const fastify = require('fastify')({ logger: true })
-fastify.get('/users', async (request, reply) => {
-  return { hello: 'world' }
-})
-\`\`\``,
-    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80',
-    date: '2025-07-02',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '9 min read',
   },
   {
     $id: 'post-24',
@@ -856,35 +716,6 @@ Whenever a developer commits a new branch (e.g., \`feature/login\`), Jenkins aut
     readTime: '6 min read',
   },
   {
-    $id: 'post-28',
-    title: 'State Management in Modern React: Redux vs. Zustand',
-    excerpt: 'An in-depth analysis of global state store weights and simplicity in modern frontend development.',
-    content: `## Introduction
-
-For years, Redux was the undisputed king of React state management. However, configuration boilerplate has led developers to explore lightweight alternatives like **Zustand**.
-
-## Comparison
-
-- **Redux Toolkit**: Structured, strict, excellent developer tools, but steep learning curve.
-- **Zustand**: Fast, uses simple hooks, zero boilerplate config.
-
-## Declaring Zustand Store
-
-\`\`\`javascript
-import create from 'zustand'
-
-const useStore = create((set) => ({
-  bears: 0,
-  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-}))
-\`\`\``,
-    coverImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80',
-    date: '2025-04-18',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '8 min read',
-  },
-  {
     $id: 'post-29',
     title: 'Containerising Python Applications with Poetry and Docker',
     excerpt: 'Using Poetry package manager for clean, deterministic Python container image dependency installations.',
@@ -976,29 +807,6 @@ Running database migrations concurrently with API updates can lead to connection
     readTime: '8 min read',
   },
   {
-    $id: 'post-33',
-    title: 'Building Scalable WebSockets with Node.js and Redis',
-    excerpt: 'Orchestrating live real-time WebSocket clients across multiple server nodes using Redis Pub/Sub adapter.',
-    content: `## The Multi-Server WebSocket Problem
-
-WebSockets maintain active connection states. If a client connects to Node Server A, they cannot receive events published on Node Server B.
-
-## The Redis Adapter Solution
-
-Using a **Redis Pub/Sub broker** synchronises server messages across all microservice instances.
-
-\`\`\`javascript
-const io = require('socket.io')(httpServer);
-const redisAdapter = require('socket.io-redis');
-io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
-\`\`\``,
-    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80',
-    date: '2025-02-05',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '10 min read',
-  },
-  {
     $id: 'post-34',
     title: 'AWS CloudWatch Logs & Metrics: Custom Dashboard Setup',
     excerpt: 'Consolidating infrastructure and API metrics in real-time onto premium observability dashboards.',
@@ -1072,25 +880,6 @@ stage('Deploy to Production') {
     author: 'Md Shadab Azam Ansari',
     category: 'CI/CD',
     readTime: '7 min read',
-  },
-  {
-    $id: 'post-37',
-    title: 'React Hooks Deep Dive: Beyond useState and useEffect',
-    excerpt: 'Mastering performance hooks like useMemo, useCallback, and useRef to eliminate performance issues.',
-    content: `## Why Go Deeper?
-
-Developers often run into infinite loops or unnecessary component updates due to misconfigured dependencies inside useEffect hooks.
-
-## React performance Hook Checklist
-
-- **useMemo**: Cache calculations across renders.
-- **useCallback**: Cache functions to prevent child re-renders.
-- **useRef**: Store mutable references that do not trigger component re-render.`,
-    coverImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80',
-    date: '2024-12-05',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '9 min read',
   },
   {
     $id: 'post-38',
@@ -1201,31 +990,6 @@ Attackers are targeting CI pipelines to inject malicious code into production se
     readTime: '9 min read',
   },
   {
-    $id: 'post-43',
-    title: 'Node.js Streams: Handling Gigabytes of Data Efficiently',
-    excerpt: 'Avoid process out-of-memory errors by processing large files with readable, writable streams.',
-    content: `## The Memory Exhaustion Trap
-
-If you read a 2GB file directly into memory using \`fs.readFile\`, a Node.js server will crash because of the maximum memory heap limit.
-
-## The Stream Approach
-
-Streams process data chunk by chunk, keeping memory consumption low.
-
-\`\`\`javascript
-const fs = require('fs');
-const readable = fs.createReadStream('large-input.csv');
-const writable = fs.createWriteStream('output.txt');
-
-readable.pipe(writable);
-\`\`\``,
-    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80',
-    date: '2024-09-05',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '7 min read',
-  },
-  {
     $id: 'post-44',
     title: 'Kubernetes Storage Classes: Dynamic Provisioning with EBS',
     excerpt: 'How to manage persistent volumes dynamically inside Kubernetes cluster nodes using AWS EBS.',
@@ -1300,25 +1064,6 @@ post {
     readTime: '7 min read',
   },
   {
-    $id: 'post-47',
-    title: 'API Design: REST vs. GraphQL for Cloud Architectures',
-    excerpt: 'Comparing data fetch overheads, schemas, and API performance in scalable modern systems.',
-    content: `## Comparative Overview
-
-Choosing between REST and GraphQL affects network efficiency, developer speed, and caching layers.
-
-## REST APIs
-Predictable, cached natively at the browser/CDN level, but susceptible to over-fetching or under-fetching payloads.
-
-## GraphQL
-Allows clients to request exactly what they need in a single query. Highly efficient for frontends, but complex to cache and secure.`,
-    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80',
-    date: '2024-07-05',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '9 min read',
-  },
-  {
     $id: 'post-48',
     title: 'AWS Route53 Traffic Routing & Failover Strategies',
     excerpt: 'Designing reliable disaster recovery routing systems using Route53 active-passive health checks.',
@@ -1336,31 +1081,6 @@ Disaster recovery is a critical component of enterprise operations.
     author: 'Md Shadab Azam Ansari',
     category: 'AWS',
     readTime: '8 min read',
-  },
-  {
-    $id: 'post-49',
-    title: 'Debugging Memory Leaks in Node.js Production Apps',
-    excerpt: 'How to detect heap allocations, read memory dumps, and prevent memory leaks using Chrome DevTools.',
-    content: `## The Symptom
-
-If your Node.js container memory graph is steadily climbing until it crashes under Out-of-Memory limits, you have a memory leak.
-
-## Common Causes
-
-- **Accidental Global Variables** storing objects in memory.
-- **Uncleared Timers or Intervals** holding active references.
-- **Database Subscriptions** that are never closed.
-
-## Extracting Heap Dumps
-\`\`\`javascript
-const heapdump = require('heapdump');
-heapdump.writeSnapshot('/var/log/' + Date.now() + '.heapsnapshot');
-\`\`\``,
-    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80',
-    date: '2024-06-05',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Full Stack',
-    readTime: '9 min read',
   },
   {
     $id: 'post-50',
@@ -1411,26 +1131,5 @@ spec:
     author: 'Md Shadab Azam Ansari',
     category: 'Kubernetes',
     readTime: '10 min read',
-  },
-  {
-    $id: 'post-52',
-    title: 'The Developer\'s Career Guide: Transitioning to DevOps',
-    excerpt: 'A comprehensive guide for full stack engineers looking to transition into cloud systems and DevOps engineering.',
-    content: `## Why DevOps?
-
-The boundary between development and operations has dissolved. Developers who understand containerisation, dynamic routing, and pipeline automation are highly valuable.
-
-## Roadmap for Transitioning
-
-1. **Master Linux Fundamentals**: Learn script writing, process management, and permissions.
-2. **Learn Containerization**: Move all your code projects into Docker files.
-3. **Understand Networking**: Deep dive into DNS, HTTP codes, TLS/SSL, and routing.
-4. **Choose a Cloud Provider**: Build AWS or Azure configurations.
-5. **Learn Infrastructure as Code**: Replace console configurations with Terraform.`,
-    coverImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80',
-    date: '2024-04-18',
-    author: 'Md Shadab Azam Ansari',
-    category: 'Career',
-    readTime: '8 min read',
-  },
+  }
 ];

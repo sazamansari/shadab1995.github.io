@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getBlogPost, getBlogPosts } from '../appwrite';
+import SEO from './SEO';
 
 export default function BlogPost() {
   const { id }         = useParams();
@@ -33,55 +34,21 @@ export default function BlogPost() {
   useEffect(() => { window.scrollTo(0, 0); }, [id]);
 
   
+  const title = post ? `${post.title} | Md Shadab Azam Ansari Blog` : 'Cloud & DevOps Technical Article | Md Shadab Azam Ansari';
+  const rawContent = post?.content || '';
+  const cleanDesc = rawContent
+    .replace(/##\s+/g, '')
+    .replace(/###\s+/g, '')
+    .replace(/\*\*|`/g, '')
+    .replace(/-\s+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const description = cleanDesc.length > 160 ? cleanDesc.slice(0, 157) + '...' : (cleanDesc || 'Read a practical Cloud and DevOps engineering article by Md Shadab Azam Ansari.');
+  const fullUrl = `https://md-shadab-azam-ansari.vercel.app/blog/${post?.$id || id}`;
+
   useEffect(() => {
     if (!post) return;
-
-    const title = `${post.title} | Md Shadab Azam Ansari Blog`;
-    const rawContent = post.content || '';
-    const cleanDesc = rawContent
-      .replace(/##\s+/g, '')
-      .replace(/###\s+/g, '')
-      .replace(/\*\*|`/g, '')
-      .replace(/-\s+/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-    const description = cleanDesc.length > 160 ? cleanDesc.slice(0, 157) + '...' : cleanDesc;
-
-    document.title = title;
-
-    const setMetaTag = (attrName, attrValue, content) => {
-      let element = document.querySelector(`meta[${attrName}="${attrValue}"]`);
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(attrName, attrValue);
-        document.head.appendChild(element);
-      }
-      element.setAttribute('content', content);
-    };
-
-    const fullUrl = `https://md-shadab-azam-ansari.vercel.app/blog/${post.$id || id}`;
-
-    setMetaTag('name', 'description', description);
-    setMetaTag('property', 'og:title', title);
-    setMetaTag('property', 'og:type', 'article');
-    setMetaTag('property', 'og:description', description);
-    setMetaTag('property', 'og:url', fullUrl);
-    if (post.coverImage) {
-      setMetaTag('property', 'og:image', post.coverImage);
-      setMetaTag('name', 'twitter:image', post.coverImage);
-    }
-
-    setMetaTag('name', 'twitter:title', title);
-    setMetaTag('name', 'twitter:description', description);
-    setMetaTag('property', 'article:published_time', post.date || '');
-    setMetaTag('property', 'article:author', post.author || 'Md Shadab Azam Ansari');
-    setMetaTag('property', 'article:section', post.category || 'Technology');
-
-    let canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (canonicalLink) {
-      canonicalLink.setAttribute('href', fullUrl);
-    }
-
+    
     let articleSchema = document.getElementById('article-structured-data');
     if (!articleSchema) {
       articleSchema = document.createElement('script');
@@ -114,7 +81,7 @@ export default function BlogPost() {
     return () => {
       document.getElementById('article-structured-data')?.remove();
     };
-  }, [post, id]);
+  }, [post, id, description, fullUrl]);
 
   
   useEffect(() => {
@@ -189,6 +156,14 @@ export default function BlogPost() {
       <div className="reading-progress-bar-container">
         <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />
       </div>
+
+      <SEO 
+        title={title} 
+        description={description} 
+        url={fullUrl} 
+        image={post?.coverImage} 
+        type="article" 
+      />
 
       <div className="colorlib-narrow-content">
         <button className="btn-back" onClick={() => navigate('/blog')} id="blog-back-btn">
