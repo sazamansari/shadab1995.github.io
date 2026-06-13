@@ -623,39 +623,37 @@ export default function CodePlayground() {
             </button>
           </div>
 
-          {activeTab === 'console' ? (
-            <div className="playground-console" id="playground-terminal-console">
-              {logs.length === 0 ? (
-                <div className="console-empty">
-                  <i className="fa fa-code" />
-                  <p>Console is empty. Click "Run Code" above to execute your script.</p>
+          <div className="playground-console" id="playground-terminal-console" style={{ display: activeTab === 'console' ? 'block' : 'none' }}>
+            {logs.length === 0 ? (
+              <div className="console-empty">
+                <i className="fa fa-code" />
+                <p>Console is empty. Click "Run Code" above to execute your script.</p>
+              </div>
+            ) : (
+              logs.map((log, index) => (
+                <div key={index} className={`console-line ${log.type}`}>
+                  {log.text}
                 </div>
-              ) : (
-                logs.map((log, index) => (
-                  <div key={index} className={`console-line ${log.type}`}>
-                    {log.text}
-                  </div>
-                ))
-              )}
-            </div>
-          ) : (
-            <div className="playground-preview-container">
-              {language !== 'html' && language !== 'javascript' ? (
-                <div className="playground-preview-placeholder">
-                  <i className="fa fa-ban" />
-                  <p>Live Preview is only available for Web (HTML/CSS/JS) projects.</p>
-                </div>
-              ) : (
-                <iframe
-                  id="playground-preview-frame"
-                  ref={iframeRef}
-                  className="playground-preview-iframe"
-                  title="Code Preview Sandbox"
-                  sandbox="allow-scripts allow-popups"
-                />
-              )}
-            </div>
-          )}
+              ))
+            )}
+          </div>
+          
+          <div className="playground-preview-container" style={{ display: activeTab === 'preview' ? 'block' : 'none' }}>
+            {language !== 'html' && language !== 'javascript' ? (
+              <div className="playground-preview-placeholder">
+                <i className="fa fa-ban" />
+                <p>Live Preview is only available for Web (HTML/CSS/JS) projects.</p>
+              </div>
+            ) : (
+              <iframe
+                id="playground-preview-frame"
+                ref={iframeRef}
+                className="playground-preview-iframe"
+                title="Code Preview Sandbox"
+                sandbox="allow-scripts allow-popups"
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

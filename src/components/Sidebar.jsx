@@ -29,6 +29,7 @@ export default function Sidebar({ menuOpen, toggleMenu }) {
         <div
           className="author-img"
           style={{ backgroundImage: 'url(/profile.jpeg)' }}
+          role="img"
           aria-label="Profile photo of Md Shadab Azam Ansari"
         />
         <div id="colorlib-logo">

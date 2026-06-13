@@ -6,18 +6,19 @@ import React, { useRef, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
 import Sidebar        from './components/Sidebar';
-import About          from './components/About';
-import Skills         from './components/Skills';
-import Experience     from './components/Experience';
-import Education      from './components/Education';
-import Projects       from './components/Projects';
-import Certifications from './components/Certifications';
-import Contact        from './components/Contact';
-import Blog           from './components/Blog';
-import BlogPost       from './components/BlogPost';
-import AdminBlog      from './components/AdminBlog';
-import CodePlayground from './components/CodePlayground';
 import Footer         from './components/Footer';
+import About          from './components/About';
+
+const Skills         = React.lazy(() => import('./components/Skills'));
+const Experience     = React.lazy(() => import('./components/Experience'));
+const Education      = React.lazy(() => import('./components/Education'));
+const Projects       = React.lazy(() => import('./components/Projects'));
+const Certifications = React.lazy(() => import('./components/Certifications'));
+const Contact        = React.lazy(() => import('./components/Contact'));
+const Blog           = React.lazy(() => import('./components/Blog'));
+const BlogPost       = React.lazy(() => import('./components/BlogPost'));
+const AdminBlog      = React.lazy(() => import('./components/AdminBlog'));
+const CodePlayground = React.lazy(() => import('./components/CodePlayground'));
 
 import { useCanvasAnimation } from './useCanvasAnimation';
 
@@ -55,10 +56,10 @@ function PageShell({ children }) {
       <Sidebar menuOpen={menuOpen} toggleMenu={toggleMenu} />
 
       {}
-      <div id="colorlib-main">
+      <main id="colorlib-main">
         {children}
         <Footer />
-      </div>
+      </main>
     </div>
   );
 }
@@ -168,21 +169,23 @@ export default function App() {
     <BrowserRouter>
       <LegacyHashRedirect />
       <SEOManager />
-      <Routes>
-        <Route path="/"                element={<AboutPage />} />
-        <Route path="/skills"          element={<SkillsPage />} />
-        <Route path="/experience"      element={<ExperiencePage />} />
-        <Route path="/education"       element={<EducationPage />} />
-        <Route path="/projects"        element={<ProjectsPage />} />
-        <Route path="/certifications"  element={<CertificationsPage />} />
-        <Route path="/contact"         element={<ContactPage />} />
-        <Route path="/blog"            element={<BlogPage />} />
-        <Route path="/blog/:id"        element={<BlogPostPage />} />
-        <Route path="/playground"      element={<PlaygroundPage />} />
-        <Route path="/admin"           element={<AdminPage />} />
-        {}
-        <Route path="*"               element={<AboutPage />} />
-      </Routes>
+      <React.Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>}>
+        <Routes>
+          <Route path="/"                element={<AboutPage />} />
+          <Route path="/skills"          element={<SkillsPage />} />
+          <Route path="/experience"      element={<ExperiencePage />} />
+          <Route path="/education"       element={<EducationPage />} />
+          <Route path="/projects"        element={<ProjectsPage />} />
+          <Route path="/certifications"  element={<CertificationsPage />} />
+          <Route path="/contact"         element={<ContactPage />} />
+          <Route path="/blog"            element={<BlogPage />} />
+          <Route path="/blog/:id"        element={<BlogPostPage />} />
+          <Route path="/playground"      element={<PlaygroundPage />} />
+          <Route path="/admin"           element={<AdminPage />} />
+          {}
+          <Route path="*"               element={<AboutPage />} />
+        </Routes>
+      </React.Suspense>
     </BrowserRouter>
   );
 }

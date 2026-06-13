@@ -131,9 +131,9 @@ export default function Certifications() {
                   <div key={stat.label} style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
                     padding: '8px 18px', borderRadius: '20px',
-                    background: 'rgba(0,0,0,0.05)',
+                    background: 'rgba(0,0,0,0.1)',
                     fontFamily: '"Quicksand", Arial, sans-serif',
-                    fontSize: '13px', fontWeight: 600, color: 'rgba(0,0,0,0.65)',
+                    fontSize: '13px', fontWeight: 600, color: '#333',
                   }}>
                     <i className={`fa ${stat.icon}`} style={{ color: stat.color, fontSize: '15px' }} />
                     {stat.label}
@@ -190,13 +190,13 @@ function CertCard({ cert }) {
         )}
 
         {cert.issued && cert.expires ? (
-          <div className="cert-year" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', marginTop: '4px' }}>
-            <i className="fa fa-calendar-check-o" style={{ marginRight: '5px', opacity: 0.6 }} />
+          <div className="cert-year" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.9)', marginTop: '4px' }}>
+            <i className="fa fa-calendar-check-o" style={{ marginRight: '5px', opacity: 0.9 }} />
             {cert.issued} – {cert.expires}
           </div>
         ) : (
-          <div className="cert-year" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', marginTop: '4px' }}>
-            <i className="fa fa-calendar-check-o" style={{ marginRight: '5px', opacity: 0.6 }} />
+          <div className="cert-year" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.9)', marginTop: '4px' }}>
+            <i className="fa fa-calendar-check-o" style={{ marginRight: '5px', opacity: 0.9 }} />
             {cert.year}
           </div>
         )}
