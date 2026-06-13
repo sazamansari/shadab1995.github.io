@@ -9,6 +9,8 @@ import Sidebar        from './components/Sidebar';
 import About          from './components/About';
 import Skills         from './components/Skills';
 import Experience     from './components/Experience';
+import Education      from './components/Education';
+import Projects       from './components/Projects';
 import Certifications from './components/Certifications';
 import Contact        from './components/Contact';
 import Blog           from './components/Blog';
@@ -77,6 +79,8 @@ function AdminShell() {
 const AboutPage          = () => <PageShell><About /></PageShell>;
 const SkillsPage         = () => <PageShell><Skills /></PageShell>;
 const ExperiencePage     = () => <PageShell><Experience /></PageShell>;
+const EducationPage      = () => <PageShell><Education /></PageShell>;
+const ProjectsPage       = () => <PageShell><Projects /></PageShell>;
 const CertificationsPage = () => <PageShell><Certifications /></PageShell>;
 const ContactPage        = () => <PageShell><Contact /></PageShell>;
 const BlogPage           = () => <PageShell><Blog /></PageShell>;
@@ -117,6 +121,14 @@ function SEOManager() {
     '/experience': {
       title: 'Cloud & DevOps Engineering Experience | Md Shadab Azam Ansari',
       description: 'Professional experience delivering cloud infrastructure, CI/CD automation, scalable APIs, Kubernetes deployments, and production reliability.',
+    },
+    '/education': {
+      title: 'Education | Md Shadab Azam Ansari',
+      description: 'Educational background including BTech in Computer Science and Engineering from Galgotias University, and Udacity Full Stack and React.js Developer Nanodegrees.',
+    },
+    '/projects': {
+      title: 'Cloud & DevOps Projects | Md Shadab Azam Ansari',
+      description: 'Portfolio of hands-on Cloud, DevOps, Kubernetes, Docker, Jenkins, and AWS EC2 projects showcasing real-world experience.',
     },
     '/certifications': {
       title: 'AWS, Azure & DevOps Certifications | Md Shadab Azam Ansari',
@@ -160,6 +172,8 @@ export default function App() {
         <Route path="/"                element={<AboutPage />} />
         <Route path="/skills"          element={<SkillsPage />} />
         <Route path="/experience"      element={<ExperiencePage />} />
+        <Route path="/education"       element={<EducationPage />} />
+        <Route path="/projects"        element={<ProjectsPage />} />
         <Route path="/certifications"  element={<CertificationsPage />} />
         <Route path="/contact"         element={<ContactPage />} />
         <Route path="/blog"            element={<BlogPage />} />

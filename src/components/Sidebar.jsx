@@ -6,6 +6,8 @@ const NAV_ITEMS = [
   { path: '/',               label: 'About',           exact: true },
   { path: '/skills',         label: 'Skills' },
   { path: '/experience',     label: 'Work Experience' },
+  { path: '/education',      label: 'Education' },
+  { path: '/projects',       label: 'Projects' },
   { path: '/certifications', label: 'Certifications' },
   { path: '/contact',        label: 'Contact' },
   { path: '/blog',           label: 'Blog' },
