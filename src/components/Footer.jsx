@@ -27,7 +27,7 @@ export default function Footer() {
             fontFamily: '"Quicksand", Arial, sans-serif', 
             fontWeight: '600', 
             fontSize: '14px', 
-            color: 'rgba(0, 0, 0, 0.7)', 
+            color: 'rgba(0, 0, 0, 0.85)', 
             margin: '0 0 1.5em 0',
             letterSpacing: '0.5px'
           }}>
@@ -74,7 +74,7 @@ export default function Footer() {
           <div style={{ marginTop: '12px' }}>
             <Link to="/admin" style={{ 
               fontSize: '11px', 
-              color: 'rgba(0, 0, 0, 0.45)', 
+              color: 'rgba(0, 0, 0, 0.75)', 
               textDecoration: 'none', 
               textTransform: 'uppercase', 
               letterSpacing: '1px',
