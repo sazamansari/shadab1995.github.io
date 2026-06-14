@@ -7,7 +7,7 @@ const EXPERIENCES = [
     id: 1,
     color: 'color-4',
     icon: 'fa-briefcase',
-    company: 'Excellence Education | Hitbullseye (Client Engagement)',
+    company: 'Excellence Education | (Client Engagement)',
     role: 'Senior Consultant',
     period: 'Jan 2025 – Present | Chandigarh',
     points: [
