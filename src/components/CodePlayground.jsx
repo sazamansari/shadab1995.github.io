@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AnimateBox from './AnimateBox';
+import Editor from '@monaco-editor/react';
 
 
 const TEMPLATES = {
@@ -144,17 +145,11 @@ export default function CodePlayground() {
   const [logs, setLogs] = useState([]);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isEditorMaximized, setIsEditorMaximized] = useState(false);
+  const [isOutputMaximized, setIsOutputMaximized] = useState(false);
 
-  const textareaRef = useRef(null);
-  const lineNumbersRef = useRef(null);
   const iframeRef = useRef(null);
-
-  
-  const handleScroll = () => {
-    if (textareaRef.current && lineNumbersRef.current) {
-      lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
-    }
-  };
 
   
   useEffect(() => {
@@ -212,23 +207,7 @@ export default function CodePlayground() {
   };
 
   
-  const handleKeyDown = (e) => {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const textarea = e.target;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const value = textarea.value;
-      
-      const newValue = value.substring(0, start) + '    ' + value.substring(end);
-      setCode(newValue);
-      
-      
-      setTimeout(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + 4;
-      }, 0);
-    }
-  };
+
 
   
   useEffect(() => {
@@ -474,11 +453,10 @@ export default function CodePlayground() {
   };
 
   
-  const lineCount = code.split('\n').length;
-  const lineNumbersArray = Array.from({ length: Math.max(lineCount, 1) }, (_, i) => i + 1);
+  const lineCount = code ? code.split('\n').length : 0;
 
   return (
-    <div className="playground-container">
+    <div className={`playground-container ${isFullscreen ? 'playground-fullscreen' : ''}`}>
       {showToast && (
         <div className="playground-toast" id="playground-toast-alert">
           <i className="fa fa-check-circle" style={{ color: 'var(--teal)' }} />
@@ -554,15 +532,23 @@ export default function CodePlayground() {
               >
                 <i className="fa fa-share-alt" /> Share Code
               </button>
+
+              <button 
+                id="playground-fullscreen-btn" 
+                className="playground-btn playground-btn-secondary"
+                onClick={() => setIsFullscreen(!isFullscreen)}
+              >
+                <i className={`fa ${isFullscreen ? 'fa-compress' : 'fa-expand'}`} /> {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+              </button>
             </div>
           </div>
         </div>
       </AnimateBox>
 
       {}
-      <div className="playground-workspace">
+      <div className="playground-workspace" style={{ display: (isEditorMaximized || isOutputMaximized) ? 'block' : undefined }}>
         {}
-        <div className="playground-editor-wrapper">
+        <div className="playground-editor-wrapper" style={{ display: isOutputMaximized ? 'none' : 'flex' }}>
           <div className="playground-editor-header">
             <span className="editor-filename">
               <i className="fa fa-file-code-o" />
@@ -570,27 +556,34 @@ export default function CodePlayground() {
               {language === 'html' && 'index.html'}
               {language === 'python' && 'script.py'}
             </span>
-            <span className="editor-actions">Tab indents 4 spaces</span>
+            <span className="editor-actions">
+              Tab indents 4 spaces
+              <button 
+                onClick={() => setIsEditorMaximized(!isEditorMaximized)} 
+                style={{ marginLeft: '12px', background: 'transparent', border: 'none', color: 'inherit', cursor: 'pointer' }}
+                title="Toggle Maximize"
+              >
+                <i className={`fa ${isEditorMaximized ? 'fa-compress' : 'fa-expand'}`} />
+              </button>
+            </span>
           </div>
 
-          <div className="playground-editor-body">
-            <div className="playground-line-numbers" ref={lineNumbersRef}>
-              {lineNumbersArray.map((num) => (
-                <div key={num}>{num}</div>
-              ))}
-            </div>
-
-            <div className="playground-editor-container">
-              <textarea
-                id="playground-editor-textarea"
-                ref={textareaRef}
-                className="playground-textarea"
+          <div className="playground-editor-body" style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+            <div className="playground-editor-container" style={{ flex: 1, width: '100%', overflow: 'hidden' }}>
+              <Editor
+                height="100%"
+                language={language}
+                theme="vs-dark"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
-                onScroll={handleScroll}
-                onKeyDown={handleKeyDown}
-                spellCheck="false"
-                placeholder="// Write code here..."
+                onChange={(value) => setCode(value || '')}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  wordWrap: 'on',
+                  padding: { top: 16 },
+                  scrollBeyondLastLine: false,
+                  fontFamily: "'Consolas', 'Fira Code', 'Courier New', monospace"
+                }}
               />
             </div>
           </div>
@@ -602,28 +595,38 @@ export default function CodePlayground() {
         </div>
 
         {}
-        <div className="playground-output-wrapper">
-          <div className="playground-output-header">
-            <button
-              id="tab-console"
-              className={`playground-output-tab${activeTab === 'console' ? ' active' : ''}`}
-              onClick={() => setActiveTab('console')}
-            >
-              <i className="fa fa-terminal" style={{ marginRight: '6px' }} />
-              Terminal Console
-            </button>
+        <div className="playground-output-wrapper" style={{ display: isEditorMaximized ? 'none' : 'flex', flexDirection: 'column' }}>
+          <div className="playground-output-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <button
+                id="tab-console"
+                className={`playground-output-tab${activeTab === 'console' ? ' active' : ''}`}
+                onClick={() => setActiveTab('console')}
+              >
+                <i className="fa fa-terminal" style={{ marginRight: '6px' }} />
+                Terminal Console
+              </button>
+              
+              <button
+                id="tab-preview"
+                className={`playground-output-tab${activeTab === 'preview' ? ' active' : ''}`}
+                onClick={() => setActiveTab('preview')}
+              >
+                <i className="fa fa-eye" style={{ marginRight: '6px' }} />
+                Live Preview
+              </button>
+            </div>
             
-            <button
-              id="tab-preview"
-              className={`playground-output-tab${activeTab === 'preview' ? ' active' : ''}`}
-              onClick={() => setActiveTab('preview')}
+            <button 
+              onClick={() => setIsOutputMaximized(!isOutputMaximized)}
+              style={{ background: 'transparent', border: 'none', color: '#abb2bf', cursor: 'pointer', padding: '0 15px' }}
+              title="Toggle Maximize"
             >
-              <i className="fa fa-eye" style={{ marginRight: '6px' }} />
-              Live Preview
+              <i className={`fa ${isOutputMaximized ? 'fa-compress' : 'fa-expand'}`} />
             </button>
           </div>
 
-          <div className="playground-console" id="playground-terminal-console" style={{ display: activeTab === 'console' ? 'block' : 'none' }}>
+          <div className="playground-console" id="playground-terminal-console" style={{ display: activeTab === 'console' ? 'flex' : 'none' }}>
             {logs.length === 0 ? (
               <div className="console-empty">
                 <i className="fa fa-code" />
