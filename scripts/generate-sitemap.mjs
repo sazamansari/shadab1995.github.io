@@ -7,6 +7,7 @@ const pages = [
   { path: '/', priority: '1.0', changefreq: 'monthly' },
   { path: '/skills', priority: '0.8', changefreq: 'monthly' },
   { path: '/experience', priority: '0.8', changefreq: 'monthly' },
+  { path: '/projects', priority: '0.9', changefreq: 'monthly' },
   { path: '/certifications', priority: '0.8', changefreq: 'monthly' },
   { path: '/contact', priority: '0.7', changefreq: 'yearly' },
   { path: '/blog', priority: '0.9', changefreq: 'weekly' },

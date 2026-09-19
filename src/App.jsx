@@ -109,39 +109,39 @@ function SEOManager() {
   const siteUrl = 'https://md-shadab-azam-ansari.vercel.app';
   
   const defaultSeo = {
-    title: 'Md Shadab Azam Ansari | Cloud & DevOps Engineer',
-    description: 'Portfolio of Md Shadab Azam Ansari, a Cloud & DevOps Engineer specializing in AWS, Kubernetes, Docker, Terraform, CI/CD, Node.js, and React.',
+    title: 'Md Shadab Azam Ansari | Software Engineer & Cloud DevOps Engineer',
+    description: 'Md Shadab Azam Ansari is a Software Engineer and Cloud DevOps Engineer specializing in AWS, Azure, Terraform, Kubernetes, Node.js, and React.',
   };
   
   const pages = {
     '/': defaultSeo,
     '/skills': {
-      title: 'Cloud, DevOps & Full Stack Skills | Md Shadab Azam Ansari',
-      description: 'Explore hands-on expertise in AWS, Kubernetes, Docker, Terraform, Jenkins, GitHub Actions, React, Node.js, Express, and MongoDB.',
+      title: 'Skills & Technologies | Md Shadab Azam Ansari',
+      description: 'Expertise in AWS, Azure, Terraform, Kubernetes, Docker, Node.js, React, and CI/CD pipelines.',
     },
     '/experience': {
-      title: 'Cloud & DevOps Engineering Experience | Md Shadab Azam Ansari',
-      description: 'Professional experience delivering cloud infrastructure, CI/CD automation, scalable APIs, Kubernetes deployments, and production reliability.',
+      title: 'Professional Experience | Md Shadab Azam Ansari',
+      description: 'Professional experience as a Software Engineer and Cloud DevOps Engineer delivering scalable infrastructure and applications.',
     },
     '/education': {
-      title: 'Education | Md Shadab Azam Ansari',
-      description: 'Educational background including BTech in Computer Science and Engineering from Galgotias University, and Udacity Full Stack and React.js Developer Nanodegrees.',
+      title: 'Education & Certifications | Md Shadab Azam Ansari',
+      description: 'Educational background and verified certifications in AWS, Azure, and DevOps.',
     },
     '/projects': {
-      title: 'Cloud & DevOps Projects | Md Shadab Azam Ansari',
-      description: 'Portfolio of hands-on Cloud, DevOps, Kubernetes, Docker, Jenkins, and AWS EC2 projects showcasing real-world experience.',
+      title: 'Projects | Md Shadab Azam Ansari',
+      description: 'Portfolio of hands-on Cloud, DevOps, and Software Engineering projects including NovaServe.',
     },
     '/certifications': {
-      title: 'AWS, Azure & DevOps Certifications | Md Shadab Azam Ansari',
-      description: 'View verified cloud and DevOps certifications including AWS Solutions Architect, AWS DevOps Professional, and Microsoft DevOps Engineer Expert.',
+      title: 'Cloud & DevOps Certifications | Md Shadab Azam Ansari',
+      description: 'View verified cloud and DevOps certifications including AWS Solutions Architect and Microsoft DevOps Engineer Expert.',
     },
     '/contact': {
-      title: 'Contact Md Shadab Azam Ansari | Cloud & DevOps Engineer',
-      description: 'Contact Md Shadab Azam Ansari for Cloud, DevOps, AWS, Kubernetes, CI/CD, full stack engineering, and technical collaboration opportunities.',
+      title: 'Contact | Md Shadab Azam Ansari',
+      description: 'Contact Md Shadab Azam Ansari for Cloud, DevOps, full stack engineering, and technical collaboration opportunities.',
     },
     '/blog': {
-      title: 'Cloud, DevOps, AWS & Kubernetes Blog | Md Shadab Azam Ansari',
-      description: 'Practical engineering articles about AWS, Kubernetes, Docker, Terraform, CI/CD, cloud architecture, React, Node.js, and production DevOps.',
+      title: 'Blog | Md Shadab Azam Ansari',
+      description: 'Technical articles on AWS, DevOps, Terraform, Kubernetes, Docker, Node.js, and React.',
     },
     '/playground': {
       title: 'Online JavaScript, HTML & Python Code Playground',

@@ -9,10 +9,10 @@ export default function SEO({
   url, 
   type = 'website' 
 }) {
-  const siteName = 'Md Shadab Azam Ansari Portfolio';
-  const defaultTitle = 'Md Shadab Azam Ansari | Software Engineer | Cloud & DevOps Engineer';
-  const defaultDesc = 'Portfolio of Md Shadab Azam Ansari, a Cloud & DevOps Engineer specializing in AWS, Docker, Kubernetes, Terraform, Node.js, and React.';
-  const defaultKeywords = 'Md Shadab Azam Ansari, Shadab Ansari, DevOps Engineer, Cloud Engineer, Software Engineer, React, Node.js, AWS, Kubernetes, Docker, Terraform, CI/CD';
+  const siteName = 'Md Shadab Azam Ansari';
+  const defaultTitle = 'Md Shadab Azam Ansari | Software Engineer & Cloud DevOps Engineer';
+  const defaultDesc = 'Md Shadab Azam Ansari is a Software Engineer and Cloud DevOps Engineer specializing in AWS, Azure, Terraform, Kubernetes, Node.js, and React.';
+  const defaultKeywords = 'Md Shadab Azam Ansari, Software Engineer, Cloud DevOps Engineer, DevOps Engineer, AWS Engineer, Azure Engineer, Terraform Engineer, Kubernetes Engineer, Node.js Developer, React Developer, Technical Trainer';
   const defaultImage = 'https://md-shadab-azam-ansari.vercel.app/profile.jpeg';
   const defaultUrl = 'https://md-shadab-azam-ansari.vercel.app/';
 

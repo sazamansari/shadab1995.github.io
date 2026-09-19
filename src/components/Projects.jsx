@@ -3,6 +3,24 @@ import AnimateBox from './AnimateBox';
 
 const PROJECTS = [
   {
+    id: 1,
+    name: 'NovaServe',
+    repoName: 'novaserve',
+    description: 'TypeScript-native Infrastructure as Code and Serverless Developer Platform.',
+    extendedDescription: (
+      <div style={{ marginTop: '10px', fontSize: '14px', lineHeight: '1.6' }}>
+        <strong>About</strong><br />
+        NovaServe is a TypeScript-native Infrastructure as Code (IaC) and Serverless Developer Platform. It simplifies infrastructure planning and provisioning by providing a compiler and developer tooling built specifically for cloud deployments.<br /><br />
+        <strong>☁️ Cloud Providers & Integrations</strong><br />
+        - AWS<br />
+        - Cloudflare<br />
+        - Docker<br />
+      </div>
+    ),
+    techStack: ['TypeScript', 'Infrastructure as Code', 'Serverless', 'AWS', 'Cloudflare', 'Docker', 'Compiler'],
+    link: 'https://github.com/novaserve-cloud/novaserve'
+  },
+  {
     id: 8,
     name: 'Advanced Enterprise CI/CD Pipeline',
     repoName: 'enterprise-devops-pipeline',
@@ -129,7 +147,7 @@ export default function Projects() {
               <div className="row row-bottom-padded-sm">
                 <div className="col-md-12">
                   <div className="about-desc">
-                    <h1>DevOps &amp; Cloud Projects</h1>
+                    <h2>DevOps &amp; Cloud Projects</h2>
                   </div>
                 </div>
               </div>

@@ -15,9 +15,9 @@ export default function About() {
                 <div className="about-desc">
                   <h1>
                     Md Shadab Azam{' '}
-                    <span style={{ color: '#FACD69' }}>Ansari</span>
+                    <span style={{ color: '#FACD69' }}>Ansari</span> — Software Engineer & Cloud DevOps Engineer
                   </h1>
-                  <h2>Software Engineer | Cloud Engineer | DevOps Engineer</h2>
+                  <h2>About Me</h2>
                   <hr />
                   <p>
                     Cloud &amp; DevOps Engineer with expertise in designing, deploying, and
